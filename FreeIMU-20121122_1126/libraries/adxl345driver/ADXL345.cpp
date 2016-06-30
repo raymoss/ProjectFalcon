@@ -31,7 +31,7 @@ ADXL345::ADXL345() {
 void ADXL345::init(uint8_t address) {
   _dev_address = address;
   int i=0;
-  usart_printfm(USARTx,(const int *)"Device address :%2x\n\r",address);
+  //usart_printfm(USARTx,(const int *)"Device address :%2x\n\r",address);
   powerOn();
   //usart_printfm(USARTx,(const int *)"Device address 2:%2x\n\r",address);
   //powerOn();
@@ -43,7 +43,7 @@ void ADXL345::powerOn() {
   //writeTo(ADXL345_POWER_CTL, 0);      
   //writeTo(ADXL345_POWER_CTL, 16);
   writeTo(_dev_address,ADXL345_POWER_CTL, 8);
-  writeTo(_dev_address,ADXL345_DATA_FORMAT,0xB);
+  writeTo(_dev_address,ADXL345_DATA_FORMAT,0x0B);
 }
 
 // Reads the acceleration into an array of three places
@@ -56,6 +56,7 @@ int ADXL345::readAccel(int *xyz){
 // Reads the acceleration into three variable x, y and z
 int ADXL345::readAccel(int *x, int *y, int *z) {
  int a=0;
+ 
   a=readFrom(_dev_address,ADXL345_DATAX0, 2, &_buff[0]); //read the acceleration data from the ADXL345
   if(a<0) return -1;
   //  ms_delay(1000);
@@ -79,20 +80,21 @@ int ADXL345::readAccel(int *x, int *y, int *z) {
 // readFrom(_dev_address,ADXL345_DATAX0, 6, _buff);
   // each axis reading comes in 10 bit resolution, ie 2 bytes.  Least Significat Byte first!!
   // thus we are converting both bytes in to one int
-  *x = (((int)_buff[1]) << 8) | _buff[0];  
-  *y = (((int)_buff[3]) << 8) | _buff[2];
+ 
+  *x = (((int)(signed char)_buff[1]) << 8) | _buff[0];  
+  *y = (((int)(signed char)_buff[3]) << 8) | _buff[2];
  // usart_printfm(USARTx,(const int *)"Value y0= %d\n\r",*y);
-  *z = (((int)_buff[5]) << 8) | _buff[4];
+  *z = (((int)(signed char)_buff[5]) << 8) | _buff[4];
 return 0;
 }
 
-int ADXL345::get_Gxyz(int *xyz_int){
+int ADXL345::get_Gxyz(float *xyz){
   int i,a;
-  //int xyz_int[3];
+  int xyz_int[3];
   a=readAccel(xyz_int);
   if(a<0) return -1;
   for(i=0; i<3; i++){
-    //xyz[i] = xyz_int[i] * gains[i];
+    xyz[i] = xyz_int[i] * gains[i];
   }
 return 0;
 }
@@ -603,7 +605,7 @@ float ADXL345::getRate(){
   byte _b;
   readFrom(_dev_address,ADXL345_BW_RATE, 1, &_b);
   _b &= 0x0F;
-  return (pow(2,((int) _b)-6)) * 6.25;
+  return (power(2,((int) _b)-6)) * 6.25;
 }
 
 void ADXL345::setRate(float rate){
@@ -720,14 +722,14 @@ void* accelerometer_initialization(byte device_address){
   return (void*)(accel);
 }
 
-int accel_xyz(void *accel,int accel_data[]){
+int accel_xyz(void *accel,float accel_data[]){
   int a=0;
   a=((ADXL345*)accel)->get_Gxyz(accel_data);
   if(a<0) return -1;
   return 0;
 }
 
-int pow(int x, int y){
+int power(int x, int y){
     int result=1;
     for(;y>0;y--){
     result*=x;

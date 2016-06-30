@@ -6,13 +6,13 @@ NVIC_InitTypeDef NVIC_InitStructure;
   //RCC_APB1PeriphClockCmd(RCC_APB1Periph_TIM4, ENABLE);
 
   /* Enable the TIM4 gloabal Interrupt */
-  NVIC_InitStructure.NVIC_IRQChannel = TIM4_IRQn;
+  NVIC_InitStructure.NVIC_IRQChannel = TIM1_CC_IRQn;
   NVIC_InitStructure.NVIC_IRQChannelPreemptionPriority = 0;
   NVIC_InitStructure.NVIC_IRQChannelSubPriority = 1;
   NVIC_InitStructure.NVIC_IRQChannelCmd = ENABLE;
   NVIC_Init(&NVIC_InitStructure);
 }
-void TIM4_Config_PWMOutput(){
+void TIM_Config_PWMOutput(){
     TIM_OCInitTypeDef outputChannelInit ;
     outputChannelInit.TIM_OCMode = TIM_OCMode_PWM1;
     outputChannelInit.TIM_Pulse = 750;
@@ -32,21 +32,21 @@ void TIM4_Config_PWMOutput(){
     
     Remember: if pulse_length is larger than TIM_Period, you will have output HIGH all the time
 */
-    TIM_OC1Init(TIM4, &outputChannelInit);
-    TIM_OC1PreloadConfig(TIM4, TIM_OCPreload_Enable);
-    TIM_OC2Init(TIM4, &outputChannelInit);
-    TIM_OC2PreloadConfig(TIM4, TIM_OCPreload_Enable);
-    TIM_OC3Init(TIM4, &outputChannelInit);
-    TIM_OC3PreloadConfig(TIM4, TIM_OCPreload_Enable);
-    TIM_OC4Init(TIM4, &outputChannelInit);
-    TIM_OC4PreloadConfig(TIM4, TIM_OCPreload_Enable);
-    TIM_ARRPreloadConfig(TIM4, ENABLE);
+    TIM_OC1Init(TIMi, &outputChannelInit);
+    TIM_OC1PreloadConfig(TIMi, TIM_OCPreload_Enable);
+    TIM_OC2Init(TIMi, &outputChannelInit);
+    TIM_OC2PreloadConfig(TIMi, TIM_OCPreload_Enable);
+    TIM_OC3Init(TIMi, &outputChannelInit);
+    TIM_OC3PreloadConfig(TIMi, TIM_OCPreload_Enable);
+    TIM_OC4Init(TIMi, &outputChannelInit);
+    TIM_OC4PreloadConfig(TIMi, TIM_OCPreload_Enable);
+    TIM_ARRPreloadConfig(TIMi, ENABLE);
     
 }
-void TIM4_Config_timebase(){
+void TIM_Config_timebase(){
   
   TIM_TimeBaseInitTypeDef  TIM_TimeBaseStructure;
-  RCC_APB1PeriphClockCmd(RCC_APB1Periph_TIM4, ENABLE);
+  RCC_APB2PeriphClockCmd(RCC_APB2Periph_TIM1, ENABLE);                          //Change it for appropiate timer
   uint16_t Prescalar= (uint16_t) 84;    // 255;
   /*    
     TIM4 is connected to APB1 bus, which has on F407 device 42MHz clock                 
@@ -88,32 +88,34 @@ void TIM4_Config_timebase(){
   TIM_TimeBaseStructure.TIM_Period = 19999; //6561;
   TIM_TimeBaseStructure.TIM_ClockDivision = 0;
   TIM_TimeBaseStructure.TIM_CounterMode = TIM_CounterMode_Up;
-  TIM_TimeBaseInit( TIM4, &TIM_TimeBaseStructure );
+  TIM_TimeBaseInit( TIMi, &TIM_TimeBaseStructure );
   // TIM_ITConfig( TIM4, TIM_IT_Update, ENABLE );
 }
 void GPIO_Config(){
 GPIO_InitTypeDef  GPIO_InitStructure;
-  RCC_AHB1PeriphClockCmd(RCC_AHB1Periph_GPIOD , ENABLE);
+  RCC_AHB1PeriphClockCmd(RCC_AHB1Periph_GPIOE , ENABLE);
   
-  /* GPIOC Configuration: TIM4 CH1 (PC6) and TIM4 CH2 (PC7) */
-  GPIO_InitStructure.GPIO_Pin = GPIO_Pin_12  ;
+  /* GPIOC Configuration: TIM1 CH1 CH2 CH3 CH4 : PE9 PE11  PE13  PE14 */
+  GPIO_InitStructure.GPIO_Pin = GPIO_Pin_9 | GPIO_Pin_11 | GPIO_Pin_13 | GPIO_Pin_14 ;
   GPIO_InitStructure.GPIO_Mode = GPIO_Mode_AF;
   GPIO_InitStructure.GPIO_Speed = GPIO_Speed_100MHz;
   GPIO_InitStructure.GPIO_OType = GPIO_OType_PP;
   GPIO_InitStructure.GPIO_PuPd = GPIO_PuPd_UP ;
-  GPIO_Init(GPIOD, &GPIO_InitStructure); 
-  GPIO_PinAFConfig(GPIOD, GPIO_PinSource12, GPIO_AF_TIM4);  //add some more pins for TIM4
-   //GPIO_PinAFConfig(GPIOD, GPIO_Pin_7, GPIO_AF_TIM4);  //add some more pins for TIM4
+  GPIO_Init(GPIOE, &GPIO_InitStructure); 
+  GPIO_PinAFConfig(GPIOE, GPIO_PinSource9, GPIO_AF_TIM1);  
+  GPIO_PinAFConfig(GPIOE, GPIO_PinSource11, GPIO_AF_TIM1);
+  GPIO_PinAFConfig(GPIOE, GPIO_PinSource13, GPIO_AF_TIM1);
+  GPIO_PinAFConfig(GPIOE, GPIO_PinSource14, GPIO_AF_TIM1);
 }
-void TIM4_IRQHandler(){
-  TIM_ClearFlag(TIM4, TIM_IT_Update);
+void TIM_IRQHandler(){
+  TIM_ClearFlag(TIM1, TIM_IT_Update);
   GPIOC->ODR ^= GPIO_Pin_6;
 }
 uint16_t timetotick(uint16_t time){
   return time;
 }
-void TIM4_Config_PWM(){
-  RCC_APB1PeriphClockCmd(RCC_APB1Periph_TIM4, ENABLE);
+void TIM_Config_PWM(){
+  RCC_APB2PeriphClockCmd(RCC_APB2Periph_TIM1, ENABLE);
 /* Setup TIM / PWM values
      Servo Requirements:  (May be different for your servo)
         - 50Hz (== 20ms) PWM signal
@@ -159,23 +161,25 @@ void TIM4_Config_PWM(){
     TIM_TimeBaseStructure.TIM_ClockDivision = 0;
     TIM_TimeBaseStructure.TIM_CounterMode   = TIM_CounterMode_Up;
     
-    TIM_TimeBaseInit(TIM4, &TIM_TimeBaseStructure);
+    TIM_TimeBaseInit(TIMi, &TIM_TimeBaseStructure);
     
     // Common TIM Settings
     TIM_OCInitStructure.TIM_OCMode      = TIM_OCMode_PWM1;
     TIM_OCInitStructure.TIM_OutputState = TIM_OutputState_Enable;
     TIM_OCInitStructure.TIM_Pulse       = 0;                        // Initial duty cycle
     TIM_OCInitStructure.TIM_OCPolarity  = TIM_OCPolarity_High;
+   
+    TIM_OC1Init(TIMi, &TIM_OCInitStructure);
+    TIM_OC1PreloadConfig(TIMi, TIM_OCPreload_Enable);
+    TIM_OC2Init(TIMi, &TIM_OCInitStructure);
+    TIM_OC2PreloadConfig(TIMi, TIM_OCPreload_Enable);
+    TIM_OC3Init(TIMi, &TIM_OCInitStructure);
+    TIM_OC3PreloadConfig(TIMi, TIM_OCPreload_Enable);
+    TIM_OC4Init(TIMi, &TIM_OCInitStructure);
+    TIM_OC4PreloadConfig(TIMi, TIM_OCPreload_Enable);
+   
     
-    // Channel 1
-    TIM_OC1Init(TIM4, &TIM_OCInitStructure);
-    TIM_OC1PreloadConfig(TIM4, TIM_OCPreload_Enable);
-  
-    // Channel 2
-//    TIM_OC2Init(TIM4, &TIM_OCInitStructure);
-//    TIM_OC2PreloadConfig(TIM4, TIM_OCPreload_Enable);
-    
-    TIM_ARRPreloadConfig(TIM4, ENABLE);
+    TIM_ARRPreloadConfig(TIMi, ENABLE);
     }
 void esc_write(uint16_t time,uint8_t channel_no){
   TIM_OCInitTypeDef outputChannelInit ;
@@ -189,12 +193,12 @@ void esc_write(uint16_t time,uint8_t channel_no){
   }
   //tick=timetotick(time);
   if(channel_no==1){
-    TIM4->CCR1=time;
+    TIMi->CCR1=time;
   }else if(channel_no==2){
     TIMi->CCR2=time;
   }else if(channel_no==3){
     TIMi->CCR3=time;
-  }else{
+  }else if(channel_no==4){
     TIMi->CCR4=time;
   }
   usart_printf(USARTx,"Current speeed %d\n\r",time);
@@ -203,7 +207,7 @@ void esc_write(uint16_t time,uint8_t channel_no){
 void esc_initialize(TIM_TypeDef* TIMx){
  // RCC_APB1PeriphClockCmd(RCC_APB1Periph_TIM4,ENABLE); //change this if different timer then TIM4
   GPIO_Config();
-  TIM4_Config_PWM();
+  TIM_Config_PWM();
   
   //TIM4_Config_PWMOutput();    //default configuration . Speed at 750 ms
   TIM_Cmd(TIMx, ENABLE);

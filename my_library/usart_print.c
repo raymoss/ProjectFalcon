@@ -1,5 +1,5 @@
 #include "usart_print.h"
-//private funtions list
+
 void ms_delay(int ms);
 void usart_printf(USART_TypeDef* USARTx,const char *format, ...);
 void USART_puts(USART_TypeDef* USARTx,const char *s);

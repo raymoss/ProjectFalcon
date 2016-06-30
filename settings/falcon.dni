@@ -9,7 +9,7 @@ TriggerName=main
 LimitSize=0
 ByteLimit=50
 [DebugChecksum]
-Checksum=-67348806
+Checksum=804422265
 [Exceptions]
 StopOnUncaught=_ 0
 StopOnThrow=_ 0
@@ -67,10 +67,10 @@ SumSortOrder=0
 [Disassemble mode]
 mode=0
 [Breakpoints2]
-Bp0=_ 0 "EMUL_CODE" "{$PROJ_DIR$\FreeIMU-20121122_1126\libraries\adxl345driver\ADXL345.cpp}.625.3" 0 0 1 "" 0 "" 0
-Bp1=_ 0 "EMUL_CODE" "{$PROJ_DIR$\FreeIMU-20121122_1126\libraries\itg3200filv05\ITG3200.cpp}.65.3" 0 0 1 "" 0 "" 0
+Bp0=_ 0 "EMUL_CODE" "{$PROJ_DIR$\FreeIMU-20121122_1126\libraries\adxl345driver\ADXL345.cpp}.627.3" 0 0 1 "" 0 "" 0
+Bp1=_ 0 "EMUL_CODE" "{$PROJ_DIR$\FreeIMU-20121122_1126\libraries\itg3200filv05\ITG3200.cpp}.80.3" 0 0 1 "" 0 "" 0
 Bp2=_ 0 "EMUL_CODE" "{$PROJ_DIR$\FreeIMU-20121122_1126\libraries\itg3200filv05\ITG3200.cpp}.251.3" 0 0 1 "" 0 "" 0
-Bp3=_ 0 "EMUL_CODE" "{$PROJ_DIR$\FreeIMU-20121122_1126\libraries\itg3200filv05\ITG3200.cpp}.434.3" 0 0 1 "" 0 "" 0
+Bp3=_ 0 "EMUL_CODE" "{$PROJ_DIR$\FreeIMU-20121122_1126\libraries\itg3200filv05\ITG3200.cpp}.465.7" 0 0 1 "" 0 "" 0
 Bp4=_ 0 "EMUL_CODE" "{$PROJ_DIR$\RF24-master\RF24.cpp}.1051.3" 0 0 1 "" 0 "" 0
 Count=5
 [Log file]

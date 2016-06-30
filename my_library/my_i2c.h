@@ -7,7 +7,7 @@
 #include <stdarg.h>
 #include <stdint.h>
 
-#define I2C_TIMEOUT_MAX 10
+#define I2C_TIMEOUT_MAX 1000
 #define USARTx USART1     //Checker:Change this value ifu want to initialize different usart
 #ifndef my_i2c
 #define my_i2c

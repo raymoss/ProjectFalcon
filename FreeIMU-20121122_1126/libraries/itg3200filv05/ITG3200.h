@@ -124,13 +124,16 @@ public:
   float gains[3]; 
   int offsets[3];
   float polarities[3];
-
+  float gyro_off_x;
+  float gyro_off_y;
+  float gyro_off_z;
+  //uint8_t _buff[6];
   ITG3200();
   
   // Gyro initialization
   int init(byte address);
   int init(byte address, byte _SRateDiv, byte _Range, byte _filterBW, byte _ClockSrc, bool _ITGReady, bool _INTRawDataReady);      
-    
+  void zeroGyro();  
   // Who Am I
   byte getDevAddr();
   void setDevAddr(unsigned int _addr);
@@ -199,7 +202,8 @@ private:
 extern "C"{
 #endif
 void *gyro_initialisation(byte _dev_address);
-int gyro_xyz(void * gyro,int *xyz);
+int gyro_xyz(void * gyro,float *xyz);
+int gyro_xyz_raw(void *gyro,int *xyz);
 #ifdef __cplusplus
 }
 #endif

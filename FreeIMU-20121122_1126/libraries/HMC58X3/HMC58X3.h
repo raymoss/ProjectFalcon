@@ -113,7 +113,7 @@ class HMC58X3
 extern "C"{
 #endif
 void* magnetometer_initialisation(byte _dev_address);
-int magnet_xyz(void *magnet,int *xyz);
+int magnet_xyz(void *magnet,float *xyz);
 #ifdef __cplusplus
 }
 #endif

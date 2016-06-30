@@ -282,6 +282,12 @@
     </file>
   </group>
   <file>
+    <name>$PROJ_DIR$\filter.c</name>
+  </file>
+  <file>
+    <name>$PROJ_DIR$\KalmanFilter\Kalman.cpp</name>
+  </file>
+  <file>
     <name>$PROJ_DIR$\main.c</name>
   </file>
   <file>

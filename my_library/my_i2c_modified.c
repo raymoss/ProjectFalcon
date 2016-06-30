@@ -57,7 +57,7 @@ int i2c_beginTransmission(I2C_TypeDef* I2Cx,uint8_t device_address,uint8_t opera
        while(!I2C_CheckEvent(I2Cx, I2C_EVENT_MASTER_MODE_SELECT))
        {
             /* If the timeout delay is exeeded, exit with error code */
-         ms_delay(100);
+         ms_delay(1);
          if ((timeout--) == 0){ 
            flag1 = I2Cx->SR1;
            flag2 = I2Cx->SR2;
@@ -73,7 +73,7 @@ int i2c_beginTransmission(I2C_TypeDef* I2Cx,uint8_t device_address,uint8_t opera
           while (!I2C_CheckEvent(I2Cx,I2C_EVENT_MASTER_TRANSMITTER_MODE_SELECTED))
         {
             /* If the timeout delay is exeeded, exit with error code */
-         ms_delay(100);
+         ms_delay(1);
          if ((timeout--) == 0){ 
            flag1 = I2Cx->SR1;
            flag2 = I2Cx->SR2;
@@ -99,7 +99,7 @@ int i2c_sendData(I2C_TypeDef* I2Cx,int data){
          
         while(!I2C_CheckEvent(I2Cx, I2C_EVENT_MASTER_BYTE_TRANSMITTING))
         {
-            ms_delay(100); 
+            ms_delay(1); 
           /* If the timeout delay is exeeded, exit with error code */
           if ((timeout--) == 0) {
             flag1 = I2Cx->SR1;
@@ -128,7 +128,7 @@ int I2C_read(I2C_TypeDef* I2Cx,byte buff ){
 	// wait until one byte has been received
        
 	while( !I2C_CheckEvent(I2Cx, I2C_EVENT_MASTER_BYTE_RECEIVED) ){
-          ms_delay(100);
+          ms_delay(1);
           if((timeout--)==0){
             flag1 = I2Cx->SR1;
             flag2 = I2Cx->SR2;
@@ -170,7 +170,7 @@ int readFrom(byte _dev_address,byte address, int num, byte _buff[]) {
     timeout = I2C_TIMEOUT_MAX; /* Initialize timeout value */
      // wait until one byte has been received
      while( !I2C_CheckEvent(I2Ci, I2C_EVENT_MASTER_BYTE_RECEIVED) ){
-          ms_delay(100);
+          ms_delay(1);
           if((timeout--)==0){
             flag1 = I2Ci->SR1;
             flag2 = I2Ci->SR2;
@@ -189,7 +189,7 @@ int readFrom(byte _dev_address,byte address, int num, byte _buff[]) {
   {
     timeout = I2C_TIMEOUT_MAX; 
     while(I2C_GetFlagStatus(I2Ci,I2C_FLAG_ADDR)!=SET){
-     ms_delay(100);
+     ms_delay(1);
           if((timeout--)==0){
             flag1 = I2Ci->SR1;
             flag2 = I2Ci->SR2;
@@ -203,7 +203,7 @@ int readFrom(byte _dev_address,byte address, int num, byte _buff[]) {
     flag2 = I2Ci->SR2;
     timeout = I2C_TIMEOUT_MAX; 
     while(I2C_GetFlagStatus(I2Ci,I2C_FLAG_BTF)!=SET){
-      ms_delay(100);
+      ms_delay(1);
           if((timeout--)==0){
             flag1 = I2Ci->SR1;
             flag2 = I2Ci->SR2;

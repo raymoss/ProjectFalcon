@@ -1,26 +1,26 @@
 //SPI Library for STM32F4Discovery
 #include "my_spi.h"
 uint8_t SPITimeout;
-/*Setting for SPI2 which is clocked from APB1 as 42 Mhz*/
+/*Setting for SPI3 which is clocked from APB1 as 42 Mhz*/
 void SPI_LowLevel_Init(void)
 { 
   GPIO_InitTypeDef GPIO_InitStructure;
   SPI_InitTypeDef  SPI_InitStructure;
 
   /* Enable the SPI periph */
-  RCC_APB1PeriphClockCmd(RCC_APB1Periph_SPI2, ENABLE);
+  RCC_APB1PeriphClockCmd(RCC_APB1Periph_SPI3, ENABLE);      //
 
   /* Enable SCK, MOSI and MISO GPIO clocks */
-  RCC_AHB1PeriphClockCmd(RCC_AHB1Periph_GPIOB, ENABLE);
+  RCC_AHB1PeriphClockCmd(RCC_AHB1Periph_GPIOC, ENABLE);
 
   /* Enable CS  GPIO clock */
   RCC_AHB1PeriphClockCmd(RCC_AHB1Periph_GPIOE, ENABLE);    //Using Pin 4 as Pin 3 is being used for enabling the accel.
   
   
 
-  GPIO_PinAFConfig(GPIOB, GPIO_PinSource13, GPIO_AF_SPI2);
-  GPIO_PinAFConfig(GPIOB, GPIO_PinSource14, GPIO_AF_SPI2);
-  GPIO_PinAFConfig(GPIOB, GPIO_PinSource15, GPIO_AF_SPI2);
+  GPIO_PinAFConfig(GPIOC, GPIO_PinSource10, GPIO_AF_SPI3);
+  GPIO_PinAFConfig(GPIOC, GPIO_PinSource11, GPIO_AF_SPI3);
+  GPIO_PinAFConfig(GPIOC, GPIO_PinSource12, GPIO_AF_SPI3);
 
   GPIO_InitStructure.GPIO_Mode = GPIO_Mode_AF;
   GPIO_InitStructure.GPIO_OType = GPIO_OType_PP;
@@ -28,11 +28,11 @@ void SPI_LowLevel_Init(void)
   GPIO_InitStructure.GPIO_Speed = GPIO_Speed_50MHz;
 
   /* SPI pin configuration */
-  GPIO_InitStructure.GPIO_Pin = GPIO_Pin_13 | GPIO_Pin_14 | GPIO_Pin_15;
-  GPIO_Init(GPIOB, &GPIO_InitStructure);
+  GPIO_InitStructure.GPIO_Pin = GPIO_Pin_10 | GPIO_Pin_11 | GPIO_Pin_12;
+  GPIO_Init(GPIOC, &GPIO_InitStructure);
 
   /* SPI configuration -------------------------------------------------------*/
-  SPI_I2S_DeInit(SPI2);
+  SPI_I2S_DeInit(SPI3);
   SPI_InitStructure.SPI_Direction = SPI_Direction_2Lines_FullDuplex;
   SPI_InitStructure.SPI_DataSize = SPI_DataSize_8b;
   SPI_InitStructure.SPI_CPOL = SPI_CPOL_Low;
@@ -42,10 +42,10 @@ void SPI_LowLevel_Init(void)
   SPI_InitStructure.SPI_FirstBit = SPI_FirstBit_MSB;
   SPI_InitStructure.SPI_CRCPolynomial = 7;
   SPI_InitStructure.SPI_Mode = SPI_Mode_Master;
-  SPI_Init(SPI2, &SPI_InitStructure);
+  SPI_Init(SPI3, &SPI_InitStructure);
 
   /* Enable SPI1  */
-  SPI_Cmd(SPI2, ENABLE);
+  SPI_Cmd(SPI3, ENABLE);
 
   /* Configure GPIO PIN for Lis Chip select */
   GPIO_InitStructure.GPIO_Pin = GPIO_Pin_2 | GPIO_Pin_4;
@@ -62,7 +62,7 @@ uint8_t SPI_SendByte(uint8_t byte)
   /* Loop while DR register in not emplty */
  
   SPITimeout = SPI_TIMEOUT_MAX;
-  while (SPI_I2S_GetFlagStatus(SPI2, SPI_I2S_FLAG_TXE) == RESET)
+  while (SPI_I2S_GetFlagStatus(SPI3, SPI_I2S_FLAG_TXE) == RESET)
   {
     if((SPITimeout--) == 0){ 
         usart_printf(USARTx,"Timeout reached while checking TXE flag\n\r");
@@ -73,11 +73,11 @@ uint8_t SPI_SendByte(uint8_t byte)
   }
   
   /* Send a Byte through the SPI peripheral */
-  SPI_I2S_SendData(SPI2, byte);
+  SPI_I2S_SendData(SPI3, byte);
   
   /* Wait to receive a Byte */
   SPITimeout = SPI_TIMEOUT_MAX;
-  while (SPI_I2S_GetFlagStatus(SPI2, SPI_I2S_FLAG_RXNE) == RESET)
+  while (SPI_I2S_GetFlagStatus(SPI3, SPI_I2S_FLAG_RXNE) == RESET)
   {
     if((SPITimeout--) == 0){ 
         usart_printf(USARTx,"Timeout reached while checking RXNE flag\n\r");
@@ -88,7 +88,7 @@ uint8_t SPI_SendByte(uint8_t byte)
 
 
    /* Return the Byte read from the SPI bus */
-  return (SPI_I2S_ReceiveData(SPI2));
+  return (SPI_I2S_ReceiveData(SPI3));
 }
 uint8_t SPI_Read(uint8_t* pBuffer, uint8_t ReadAddr, uint16_t NumByteToRead)
 {  

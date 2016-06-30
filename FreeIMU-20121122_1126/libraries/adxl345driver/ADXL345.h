@@ -113,7 +113,7 @@ public:
   void powerOn();
   int readAccel(int* xyx);
   int readAccel(int* x, int* y, int* z);
-  int get_Gxyz(int *xyz);
+  int get_Gxyz(float *xyz);
 
   void setTapThreshold(int tapThreshold);
   int getTapThreshold();
@@ -215,10 +215,10 @@ private:
 #ifdef __cplusplus
 extern "C"{
 #endif
-int pow(int x , int y);
+int power(int x , int y);
 void print_byte(byte val);
 void *accelerometer_initialization(byte device_address);
-int accel_xyz(void *accel,int accel_data[]);
+int accel_xyz(void *accel,float accel_data[]);
 #ifdef __cplusplus
 }
 #endif

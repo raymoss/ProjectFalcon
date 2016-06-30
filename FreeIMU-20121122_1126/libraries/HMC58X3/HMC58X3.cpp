@@ -86,7 +86,7 @@ int HMC58X3::init(bool setmode,byte address) {
         }
   }
   
-  a=writeTo( _dev_address,HMC58X3_R_CONFA, 0x70); // 8 samples averaged, 75Hz frequency, no artificial bias.
+  a=writeTo( _dev_address,HMC58X3_R_CONFA, 0x78); // 8 samples averaged, 75Hz frequency, no artificial bias.
   if(a<0){
             usart_printfm(USARTx,(const int *)"Failed to conf confa");
             return -1;
@@ -380,9 +380,9 @@ int HMC58X3::getRaw(int *x,int *y,int *z) {
       usart_printfm(USARTx,(const int *)"Failed to read from y");
       return -1;
   }
-  *x=(_buff[0]<<8)| _buff[1];
-  *y=(_buff[2]<<8)| _buff[3];
-  *z=(_buff[4]<<8)| _buff[5];
+  *x=((int)(signed char)_buff[0]<<8)| _buff[1];
+  *y=((int)(signed char)_buff[2]<<8)| _buff[3];
+  *z=((int)(signed char)_buff[4]<<8)| _buff[5];
   return 0;
 //  Wire.beginTransmission(HMC58X3_ADDR);
 //  Wire.requestFrom(HMC58X3_ADDR, 6);
@@ -411,6 +411,7 @@ int HMC58X3::getValues(int *xyz){
   return 0;
 }
 void HMC58X3::getValues(float *xyz) {
+  //int a=0;
   getValues(&xyz[0], &xyz[1], &xyz[2]);
 }
 
@@ -459,6 +460,7 @@ void *magnetometer_initialisation(byte _dev_address){
   int a=0;
   HMC58X3 *magnet=new HMC58X3();
   a=((HMC58X3*)magnet)->init(True,_dev_address);
+  ((HMC58X3*)magnet)->setGain(0x1);
   if(a<0){
     usart_printfm(USARTx,(const int *)"Failed at magnetometer initialization\n\r");
     return null;
@@ -466,12 +468,12 @@ void *magnetometer_initialisation(byte _dev_address){
     return (void*)(magnet);
   }
 
-int magnet_xyz(void *magnet,int *xyz){
+int magnet_xyz(void *magnet,float *xyz){
 int a=0;
-a=((HMC58X3*)magnet)->getValues(xyz);
-if(a<0){
-    usart_printfm(USARTx,(const int *)"Failed at getting values from sensor\n\r");
-    return -1;
-  }
+((HMC58X3*)magnet)->getValues(xyz);
+//if(a<0){
+//    usart_printfm(USARTx,(const int *)"Failed at getting values from sensor\n\r");
+//    return -1;
+//  }
 return 0;
 }

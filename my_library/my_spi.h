@@ -14,7 +14,7 @@
 #define READWRITE_CMD              ((uint8_t)0x80)
 #define DUMMY_BYTE                 ((uint8_t)0xFF)
 #define MULTIPLEBYTE_CMD           ((uint8_t)0x40)
-#define SPIx SPI2       //Checker: Change this value if u want to initialize different SPIbus 
+#define SPIx SPI3       //Checker: Change this value if u want to initialize different SPIbus 
 #define byte uint8_t
 #define MYASSERT(a,message) if(a<0){ usart_printf(USARTx,const char *message); return -1;}
 #ifdef __cplusplus
