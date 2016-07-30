@@ -172,10 +172,14 @@ void TIM_Config_PWM(){
     TIM_OCInitStructure.TIM_OutputState = TIM_OutputState_Enable;
     TIM_OCInitStructure.TIM_Pulse       = 0;                        // Initial duty cycle
     TIM_OCInitStructure.TIM_OCPolarity  = TIM_OCPolarity_High;
+<<<<<<< HEAD
     TIM_OCInitStructure.TIM_OutputNState=TIM_OutputNState_Disable;
     TIM_OCInitStructure.TIM_OCNPolarity  = TIM_OCNPolarity_High;
     TIM_OCInitStructure.TIM_OCIdleState=TIM_OCIdleState_Reset;
     TIM_OCInitStructure.TIM_OCNIdleState=TIM_OCNIdleState_Reset;
+=======
+   
+>>>>>>> 5f8c2723cf665d7de0e477ed6e57f36b3f055238
     TIM_OC1Init(TIMi, &TIM_OCInitStructure);
     TIM_OC1PreloadConfig(TIMi, TIM_OCPreload_Enable);
     TIM_OC2Init(TIMi, &TIM_OCInitStructure);
@@ -187,8 +191,12 @@ void TIM_Config_PWM(){
    
     
     TIM_ARRPreloadConfig(TIMi, ENABLE);
+<<<<<<< HEAD
     TIM_CtrlPWMOutputs(TIMi,ENABLE);
 }
+=======
+    }
+>>>>>>> 5f8c2723cf665d7de0e477ed6e57f36b3f055238
 void esc_write(uint16_t time,uint8_t channel_no){
   
   if(time<=700){
@@ -201,13 +209,23 @@ void esc_write(uint16_t time,uint8_t channel_no){
   }
   //tick=timetotick(time);
   if(channel_no==1){
+<<<<<<< HEAD
     TIMi->CCR1=time*1.619+0.642;
+=======
+    TIMi->CCR1=time;
+>>>>>>> 5f8c2723cf665d7de0e477ed6e57f36b3f055238
   }else if(channel_no==2){
     TIMi->CCR2=time*1.619+0.642;
   }else if(channel_no==3){
+<<<<<<< HEAD
     TIMi->CCR3=time*1.619+0.642;
   }else if(channel_no==4){
     TIMi->CCR4=time*1.619+0.642;
+=======
+    TIMi->CCR3=time;
+  }else if(channel_no==4){
+    TIMi->CCR4=time;
+>>>>>>> 5f8c2723cf665d7de0e477ed6e57f36b3f055238
   }
   //usart_printf(USARTx,"Current speeed %d\n\r",time);
 }

@@ -308,6 +308,7 @@
           <state>C:\Users\msheikh\Desktop\STM\Project_Falcon\FreeIMU-20121122_1126\libraries\itg3200filv05</state>
           <state>C:\Users\msheikh\Desktop\STM\Project_Falcon\RF24-master</state>
           <state>C:\Users\msheikh\Desktop\STM\Project_Falcon\KalmanFilter</state>
+<<<<<<< HEAD
           <state>C:\Users\MOHSIN\Desktop\Project_Falcon\STM32F4xx_StdPeriph_Driver\inc</state>
           <state>C:\Users\MOHSIN\Desktop\Project_Falcon</state>
           <state>C:\Users\MOHSIN\Desktop\Project_Falcon\my_library</state>
@@ -317,6 +318,8 @@
           <state>C:\Users\MOHSIN\Desktop\Project_Falcon\KalmanFilter</state>
           <state>C:\Users\MOHSIN\Desktop\Project_Falcon\RF24-master</state>
           <state>C:\Users\MOHSIN\Desktop\Project_Falcon\Include</state>
+=======
+>>>>>>> 5f8c2723cf665d7de0e477ed6e57f36b3f055238
         </option>
         <option>
           <name>CCStdIncCheck</name>
@@ -2015,9 +2018,12 @@
     </file>
   </group>
   <file>
+<<<<<<< HEAD
     <name>$PROJ_DIR$\comms_misc.c</name>
   </file>
   <file>
+=======
+>>>>>>> 5f8c2723cf665d7de0e477ed6e57f36b3f055238
     <name>$PROJ_DIR$\filter.c</name>
   </file>
   <file>

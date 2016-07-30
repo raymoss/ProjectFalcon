@@ -251,6 +251,7 @@ int ITG3200::readGyroRaw(int *_GyroX, int *_GyroY, int *_GyroZ){
   uint8_t counter=3;
   while(counter!=0){
   a=readFrom( _dev_address,GYRO_XOUT, 2, &_buff[0]);
+<<<<<<< HEAD
   a+=readFrom( _dev_address,GYRO_YOUT, 2, &_buff[2]);
   a+=readFrom( _dev_address,GYRO_ZOUT, 2, &_buff[4]);
   if(a<0)
@@ -262,6 +263,13 @@ int ITG3200::readGyroRaw(int *_GyroX, int *_GyroY, int *_GyroZ){
     usart_printfm(USARTx,(const int *)"Failed to read from sensor");
     return -1;
   }
+=======
+  MYASSERT(a,"Failed to read gyro data from registers\n\r")
+    a=readFrom( _dev_address,GYRO_YOUT, 2, &_buff[2]);
+  MYASSERT(a,"Failed to read gyro data from registers\n\r")
+    a=readFrom( _dev_address,GYRO_ZOUT, 2, &_buff[4]);
+  MYASSERT(a,"Failed to read gyro data from registers\n\r")
+>>>>>>> 5f8c2723cf665d7de0e477ed6e57f36b3f055238
   *_GyroX = (((int)(signed char)_buff[0] << 8) | _buff[1]);
   *_GyroY = (((int)(signed char)_buff[2] << 8) | _buff[3]); 
   *_GyroZ = (((int)(signed char)_buff[4] << 8) | _buff[5]);
@@ -300,10 +308,14 @@ int ITG3200::zeroCalibrate(unsigned int totSamples, unsigned int sampleDelayMS) 
 
   for (int i = 0;i < totSamples;i++){
     ms_delay(sampleDelayMS);
+<<<<<<< HEAD
     a=readGyroRaw(xyz);
     if(a<0){
       return -1;
     }
+=======
+    readGyroRaw(xyz);
+>>>>>>> 5f8c2723cf665d7de0e477ed6e57f36b3f055238
     //MYASSERT(a,"Failed to read sensor data for offset\n\r")
     tmpOffsets[0] += xyz[0];
     tmpOffsets[1] += xyz[1];
@@ -478,10 +490,24 @@ void *gyro_initialisation(byte _dev_address){
 
 int gyro_xyz(void *gyro,float *xyz){
   int a=0;
+<<<<<<< HEAD
   a=((ITG3200*)gyro)->readGyro(xyz);
   //usart_printfm(USARTx,(const int *)"Xoffset=%d\n\r Yoffset=%d\n\r,Zoffset=%d\n\r",((ITG3200*)gyro)->offsets[0],((ITG3200*)gyro)->offsets[1],((ITG3200*)gyro)->offsets[2]);
   //MYASSERT(a,"Failed to read from gyro\n\r")
   return a;
+}
+
+int gyro_xyz_raw(void *gyro,int *xyz){
+  int a=0;
+  ((ITG3200*)gyro)->readGyroRaw(xyz);
+   MYASSERT(a,"Failed to read from gyro\n\r")
+     return 0;
+=======
+  ((ITG3200*)gyro)->readGyro(xyz);
+  //usart_printfm(USARTx,(const int *)"Xoffset=%d\n\r Yoffset=%d\n\r,Zoffset=%d\n\r",((ITG3200*)gyro)->offsets[0],((ITG3200*)gyro)->offsets[1],((ITG3200*)gyro)->offsets[2]);
+  //MYASSERT(a,"Failed to read from gyro\n\r")
+  return 0;
+>>>>>>> 5f8c2723cf665d7de0e477ed6e57f36b3f055238
 }
 
 int gyro_xyz_raw(void *gyro,int *xyz){

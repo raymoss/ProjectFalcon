@@ -24,6 +24,7 @@ C:\Users\msheikh\Desktop\STM\Project_Falcon\RF24-master
 -I
 C:\Users\msheikh\Desktop\STM\Project_Falcon\KalmanFilter
 -I
+<<<<<<< HEAD
 C:\Users\MOHSIN\Desktop\Project_Falcon\STM32F4xx_StdPeriph_Driver\inc
 -I
 C:\Users\MOHSIN\Desktop\Project_Falcon
@@ -42,6 +43,8 @@ C:\Users\MOHSIN\Desktop\Project_Falcon\RF24-master
 -I
 C:\Users\MOHSIN\Desktop\Project_Falcon\Include
 -I
+=======
+>>>>>>> 5f8c2723cf665d7de0e477ed6e57f36b3f055238
 C:\Program Files (x86)\IAR Systems\Embedded Workbench 7.0\arm\inc
 -I
 C:\Program Files (x86)\IAR Systems\Embedded Workbench 7.0\arm\inc\c
@@ -69,6 +72,7 @@ C:\Users\msheikh\Desktop\STM\Project_Falcon\FreeIMU-20121122_1126\libraries\itg3
 C:\Users\msheikh\Desktop\STM\Project_Falcon\RF24-master
 -I
 C:\Users\msheikh\Desktop\STM\Project_Falcon\KalmanFilter
+<<<<<<< HEAD
 -I
 C:\Users\MOHSIN\Desktop\Project_Falcon\STM32F4xx_StdPeriph_Driver\inc
 -I
@@ -87,6 +91,8 @@ C:\Users\MOHSIN\Desktop\Project_Falcon\KalmanFilter
 C:\Users\MOHSIN\Desktop\Project_Falcon\RF24-master
 -I
 C:\Users\MOHSIN\Desktop\Project_Falcon\Include
+=======
+>>>>>>> 5f8c2723cf665d7de0e477ed6e57f36b3f055238
 -DUSE_STDPERIPH_DRIVER=1
 -D__CHAR_BITS__=8
 -D__CHAR_MAX__=0xff
@@ -290,8 +296,13 @@ C:\Users\MOHSIN\Desktop\Project_Falcon\Include
 -D__HAS_LOCATED_DECLARATION__=1
 -D__HAS_LOCATED_WITH_INIT__=1
 -D__IAR_COMPILERBASE__=593926
+<<<<<<< HEAD
 -D__DATE__="Jul 24 2016"
 -D__TIME__="20:48:44"
+=======
+-D__DATE__="Jun 29 2016"
+-D__TIME__="19:19:21"
+>>>>>>> 5f8c2723cf665d7de0e477ed6e57f36b3f055238
 -D__STDC__=1
 -D__cplusplus=199711L
 -D__iar_extended_embedded_cplusplus=1

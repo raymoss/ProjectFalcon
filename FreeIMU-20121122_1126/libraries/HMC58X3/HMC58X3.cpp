@@ -411,10 +411,16 @@ int HMC58X3::getValues(int *xyz){
   }
   return 0;
 }
+<<<<<<< HEAD
 int HMC58X3::getValues(float *xyz) {
   int a=0;
   a=getValues(&xyz[0], &xyz[1], &xyz[2]);
   return a;
+=======
+void HMC58X3::getValues(float *xyz) {
+  //int a=0;
+  getValues(&xyz[0], &xyz[1], &xyz[2]);
+>>>>>>> 5f8c2723cf665d7de0e477ed6e57f36b3f055238
 }
 
 /*! 
@@ -462,7 +468,11 @@ void *magnetometer_initialisation(byte _dev_address){
   int a=0;
   HMC58X3 *magnet=new HMC58X3();
   a=((HMC58X3*)magnet)->init(True,_dev_address);
+<<<<<<< HEAD
   a+=((HMC58X3*)magnet)->setGain(0x1);
+=======
+  ((HMC58X3*)magnet)->setGain(0x1);
+>>>>>>> 5f8c2723cf665d7de0e477ed6e57f36b3f055238
   if(a<0){
     usart_printfm(USARTx,(const int *)"Failed at magnetometer initialization\n\r");
     return null;
@@ -472,10 +482,10 @@ void *magnetometer_initialisation(byte _dev_address){
 
 int magnet_xyz(void *magnet,float *xyz){
 int a=0;
-a=((HMC58X3*)magnet)->getValues(xyz);
-if(a<0){
-    usart_printfm(USARTx,(const int *)"Failed at getting values from sensor\n\r");
-    return -1;
-  }
+((HMC58X3*)magnet)->getValues(xyz);
+//if(a<0){
+//    usart_printfm(USARTx,(const int *)"Failed at getting values from sensor\n\r");
+//    return -1;
+//  }
 return 0;
 }

@@ -114,8 +114,12 @@ public:
   int readAccel(int* xyx);
   int readAccel(int* x, int* y, int* z);
   int get_Gxyz(float *xyz);
+<<<<<<< HEAD
   int set_bw(byte bw_code);
   
+=======
+
+>>>>>>> 5f8c2723cf665d7de0e477ed6e57f36b3f055238
   void setTapThreshold(int tapThreshold);
   int getTapThreshold();
   void setAxisGains(float *_gains);
