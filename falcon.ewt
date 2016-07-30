@@ -282,18 +282,6 @@
     </file>
   </group>
   <file>
-<<<<<<< HEAD
-    <name>$PROJ_DIR$\comms_misc.c</name>
-  </file>
-  <file>
-=======
->>>>>>> 5f8c2723cf665d7de0e477ed6e57f36b3f055238
-    <name>$PROJ_DIR$\filter.c</name>
-  </file>
-  <file>
-    <name>$PROJ_DIR$\KalmanFilter\Kalman.cpp</name>
-  </file>
-  <file>
     <name>$PROJ_DIR$\main.c</name>
   </file>
   <file>

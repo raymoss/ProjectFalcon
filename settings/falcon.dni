@@ -43,9 +43,6 @@ ITMlogFile=$PROJ_DIR$\ITM.log
 [SfrWindow]
 Show=1 1
 Sort=4 0
-[Trace2]
-Enabled=0
-ShowSource=0
 [SWOTraceWindow]
 PcSampling=0
 InterruptLogs=0
@@ -68,23 +65,6 @@ GraphEnabled=0
 ShowTimeLog=1
 ShowTimeSum=1
 SumSortOrder=0
-[Disassemble mode]
-mode=0
-[Breakpoints2]
-<<<<<<< HEAD
-Bp0=_ 0 "EMUL_CODE" "{$PROJ_DIR$\FreeIMU-20121122_1126\libraries\adxl345driver\ADXL345.cpp}.623.7" 0 0 1 "" 0 "" 0
-Bp1=_ 0 "EMUL_CODE" "{$PROJ_DIR$\FreeIMU-20121122_1126\libraries\itg3200filv05\ITG3200.cpp}.80.3" 0 0 1 "" 0 "" 0
-Bp2=_ 0 "EMUL_CODE" "{$PROJ_DIR$\FreeIMU-20121122_1126\libraries\itg3200filv05\ITG3200.cpp}.253.3" 0 0 1 "" 0 "" 0
-Bp3=_ 0 "EMUL_CODE" "{$PROJ_DIR$\FreeIMU-20121122_1126\libraries\itg3200filv05\ITG3200.cpp}.480.7" 0 0 1 "" 0 "" 0
-=======
-Bp0=_ 0 "EMUL_CODE" "{$PROJ_DIR$\FreeIMU-20121122_1126\libraries\adxl345driver\ADXL345.cpp}.627.3" 0 0 1 "" 0 "" 0
-Bp1=_ 0 "EMUL_CODE" "{$PROJ_DIR$\FreeIMU-20121122_1126\libraries\itg3200filv05\ITG3200.cpp}.80.3" 0 0 1 "" 0 "" 0
-Bp2=_ 0 "EMUL_CODE" "{$PROJ_DIR$\FreeIMU-20121122_1126\libraries\itg3200filv05\ITG3200.cpp}.251.3" 0 0 1 "" 0 "" 0
-Bp3=_ 0 "EMUL_CODE" "{$PROJ_DIR$\FreeIMU-20121122_1126\libraries\itg3200filv05\ITG3200.cpp}.465.7" 0 0 1 "" 0 "" 0
->>>>>>> 5f8c2723cf665d7de0e477ed6e57f36b3f055238
-Bp4=_ 0 "EMUL_CODE" "{$PROJ_DIR$\RF24-master\RF24.cpp}.1051.3" 0 0 1 "" 0 "" 0
-Bp5=_ 0 "EMUL_CODE" "{$PROJ_DIR$\FreeIMU-20121122_1126\libraries\itg3200filv05\ITG3200.cpp}.480.7" 0 0 1 "" 0 "" 0
-Count=6
 [Log file]
 LoggingEnabled=_ 0
 LogFile=_ ""
@@ -92,11 +72,6 @@ Category=_ 0
 [TermIOLog]
 LoggingEnabled=_ 0
 LogFile=_ ""
-[Aliases]
-A0=_ "C:\Users\msheikh\Desktop\STM\Project_Falcon bak\STM32F4xx_StdPeriph_Driver\src\stm32f4xx_usart.c" "C:\Users\msheikh\Desktop\STM\Project_Falcon\STM32F4xx_StdPeriph_Driver\src\stm32f4xx_usart.c"
-A1=_ "C:\Users\msheikh\Desktop\STM\Project_Falcon bak\main.c" ""
-Count=2
-SuppressDialog=1
 [CallStackLog]
 Enabled=0
 [DriverProfiling]
@@ -105,3 +80,18 @@ Mode=3
 Graph=0
 Symbiont=0
 Exclusions=
+[Disassemble mode]
+mode=0
+[Breakpoints2]
+Bp0=_ 0 "EMUL_CODE" "{$PROJ_DIR$\FreeIMU-20121122_1126\libraries\adxl345driver\ADXL345.cpp}.623.2" 0 0 1 "" 0 "" 0
+Bp1=_ 0 "EMUL_CODE" "{$PROJ_DIR$\FreeIMU-20121122_1126\libraries\itg3200filv05\ITG3200.cpp}.80.3" 0 0 1 "" 0 "" 0
+Bp2=_ 0 "EMUL_CODE" "{$PROJ_DIR$\FreeIMU-20121122_1126\libraries\itg3200filv05\ITG3200.cpp}.253.3" 0 0 1 "" 0 "" 0
+Bp3=_ 0 "EMUL_CODE" "{$PROJ_DIR$\FreeIMU-20121122_1126\libraries\itg3200filv05\ITG3200.cpp}.480.1" 0 0 1 "" 0 "" 0
+Bp4=_ 0 "EMUL_CODE" "{$PROJ_DIR$\RF24-master\RF24.cpp}.1051.3" 0 0 1 "" 0 "" 0
+Bp5=_ 0 "EMUL_CODE" "{$PROJ_DIR$\FreeIMU-20121122_1126\libraries\itg3200filv05\ITG3200.cpp}.480.3" 0 0 1 "" 0 "" 0
+Count=6
+[Aliases]
+A0=_ "C:\Users\msheikh\Desktop\STM\Project_Falcon bak\STM32F4xx_StdPeriph_Driver\src\stm32f4xx_usart.c" "C:\Users\msheikh\Desktop\STM\Project_Falcon\STM32F4xx_StdPeriph_Driver\src\stm32f4xx_usart.c"
+A1=_ "C:\Users\msheikh\Desktop\STM\Project_Falcon bak\main.c" ""
+Count=2
+SuppressDialog=1
