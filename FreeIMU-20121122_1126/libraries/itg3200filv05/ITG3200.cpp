@@ -32,7 +32,7 @@
 
 ITG3200::ITG3200() {
   setGains(1.0,1.0,1.0);
-  setOffsets(0.0,0.0,0.0);
+  setOffsets(0,0,0);
   setRevPolarity(0,0,0);
   //Wire.begin();       //Normally this code is called from setup() at user code
                         //but some people reported that joining I2C bus earlier
@@ -59,24 +59,24 @@ int ITG3200::init(byte  address) {
 }
 
 int ITG3200::init(byte address, byte _SRateDiv, byte _Range, byte _filterBW, byte _ClockSrc, bool _ITGReady, bool _INTRawDataReady) {
-  int a=0;
-  _dev_address = address;
-  //this needs to be debugged
-  a=readFrom(_dev_address,WHO_AM_I,1,_buff);
-  MYASSERT(a,"Failed to write to register\n\r")
-  usart_printfm(USARTx,(const int *)"Succesfully read from register\n\r");
-  usart_printfm(USARTx,(const int *)"Value of the who am i register %d \n\r",_buff[0]);
+   int a=0;
+  // _dev_address = address;
+  // //this needs to be debugged
+  // a=readFrom(_dev_address,WHO_AM_I,1,_buff);
+  // MYASSERT(a,"Failed to write to register\n\r")
+  // usart_printfm(USARTx,(const int *)"Succesfully read from register\n\r");
+  // usart_printfm(USARTx,(const int *)"Value of the who am i register %d \n\r",_buff[0]);
   
-//  a=writeTo(_dev_address,WHO_AM_I,66);
-//  MYASSERT(a,"Failed to write 2 register2\n\r")
-//  usart_printfm(USARTx,(const int *)"Succesfully written to register2\n\r");
+// //  a=writeTo(_dev_address,WHO_AM_I,66);
+// //  MYASSERT(a,"Failed to write 2 register2\n\r")
+// //  usart_printfm(USARTx,(const int *)"Succesfully written to register2\n\r");
   
-  a=readFrom(_dev_address,WHO_AM_I,1,_buff);
-  usart_printfm(USARTx,(const int *)"Value of the who am i register %d \n\r",_buff[0]);
-  MYASSERT(a,"Failed to write to register\n\r")
-  //this is needed to be debugged
+  // a=readFrom(_dev_address,WHO_AM_I,1,_buff);
+  // usart_printfm(USARTx,(const int *)"Value of the who am i register %d \n\r",_buff[0]);
+  // MYASSERT(a,"Failed to write to register\n\r")
+  // //this is needed to be debugged
   
-  usart_printfm(USARTx,(const int *)"Value of address:%2x\n\r",_dev_address);
+  // usart_printfm(USARTx,(const int *)"Value of address:%2x\n\r",_dev_address);
   a=setSampleRateDiv(_SRateDiv);
   MYASSERT(a,"Failed to set sample rate div\n\r")
   a=setFSRange(_Range);
@@ -131,7 +131,7 @@ int ITG3200::setFSRange(byte _Range) {
   a=readFrom( _dev_address,DLPF_FS, 1, &_buff[0]);
   MYASSERT(a,"Failed to get DLPF_FS\n\r")  
   a=writeTo( _dev_address,DLPF_FS, ((_buff[0] & ~DLPFFS_FS_SEL) | (_Range << 3)) ); 
-    MYASSERT(a,"Failed to set FSrange\n\r")
+  MYASSERT(a,"Failed to set FSrange\n\r")
     return 0;
   }
 
@@ -146,12 +146,12 @@ int ITG3200::setFilterBW(byte _BW) {
   a=readFrom( _dev_address,DLPF_FS, 1, &_buff[0]);
   MYASSERT(a,"Failed to get BW\n\r")
   a=writeTo( _dev_address,DLPF_FS, ((_buff[0] & ~DLPFFS_DLPF_CFG) | _BW));
-    MYASSERT(a,"Failed to set BW\n\r")
+  MYASSERT(a,"Failed to set BW\n\r")
     return 0;
 }
 
 bool ITG3200::isINTActiveOnLow() {  
- int a=0;
+int a=0;
   a=readFrom( _dev_address,INT_CFG, 1, &_buff[0]);
   return ((_buff[0] & INTCFG_ACTL) >> 7);
 }
@@ -205,11 +205,11 @@ bool ITG3200::isITGReadyOn() {
 }
 
 int ITG3200::setITGReady(bool _State) {
-    int a=0;
+   int a=0;
   a=readFrom( _dev_address,INT_CFG, 1, &_buff[0]);
   MYASSERT(a,"Failed to set interrupt mode\n\r")
   a=writeTo( _dev_address,INT_CFG, ((_buff[0] & ~INTCFG_ITG_RDY_EN) | _State << 2)); 
-    MYASSERT(a,"Failed to set sample rate div\n\r")
+  MYASSERT(a,"Failed to set sample rate div\n\r")
   return 0;
   }
 
@@ -248,23 +248,31 @@ void ITG3200::readTemp(float *_Temp) {
 
 int ITG3200::readGyroRaw(int *_GyroX, int *_GyroY, int *_GyroZ){
   int a=0;
+  uint8_t counter=3;
+  while(counter!=0){
   a=readFrom( _dev_address,GYRO_XOUT, 2, &_buff[0]);
-  MYASSERT(a,"Failed to read gyro data from registers\n\r")
-    a=readFrom( _dev_address,GYRO_YOUT, 2, &_buff[2]);
-  MYASSERT(a,"Failed to read gyro data from registers\n\r")
-    a=readFrom( _dev_address,GYRO_ZOUT, 2, &_buff[4]);
-  MYASSERT(a,"Failed to read gyro data from registers\n\r")
-  *_GyroX = ((_buff[0] << 8) | _buff[1]);
-  *_GyroY = ((_buff[2] << 8) | _buff[3]); 
-  *_GyroZ = ((_buff[4] << 8) | _buff[5]);
-    return 0;
+  a+=readFrom( _dev_address,GYRO_YOUT, 2, &_buff[2]);
+  a+=readFrom( _dev_address,GYRO_ZOUT, 2, &_buff[4]);
+  if(a<0)
+    counter--;
+  else 
+    break;
+  }
+  if(counter==0){
+    usart_printfm(USARTx,(const int *)"Failed to read from sensor");
+    return -1;
+  }
+  *_GyroX = (((int)(signed char)_buff[0] << 8) | _buff[1]);
+  *_GyroY = (((int)(signed char)_buff[2] << 8) | _buff[3]); 
+  *_GyroZ = (((int)(signed char)_buff[4] << 8) | _buff[5]);
+   
+  return 0;
   }
 
 int ITG3200::readGyroRaw(int *_GyroXYZ){
   int a=0;
   a=readGyroRaw(_GyroXYZ, _GyroXYZ+1, _GyroXYZ+2);
-  MYASSERT(a,"Failed to get from readGyroRaw3\n\r")
-  return 0;
+  return a;
 }
 
 void ITG3200::setRevPolarity(bool _Xpol, bool _Ypol, bool _Zpol) {
@@ -293,43 +301,51 @@ int ITG3200::zeroCalibrate(unsigned int totSamples, unsigned int sampleDelayMS) 
   for (int i = 0;i < totSamples;i++){
     ms_delay(sampleDelayMS);
     a=readGyroRaw(xyz);
-    MYASSERT(a,"Failed to read sensor data for offset\n\r")
+    if(a<0){
+      return -1;
+    }
+    //MYASSERT(a,"Failed to read sensor data for offset\n\r")
     tmpOffsets[0] += xyz[0];
     tmpOffsets[1] += xyz[1];
-    tmpOffsets[2] += xyz[2];  
+    tmpOffsets[2] += xyz[2];
+   
   }
-  setOffsets(-tmpOffsets[0] / totSamples, -tmpOffsets[1] / totSamples, -tmpOffsets[2] / totSamples);
+  setOffsets(-tmpOffsets[0] / totSamples+0.5, -tmpOffsets[1] / totSamples+0.5, -tmpOffsets[2] / totSamples+0.5);
 return 0;
   }
 
 int ITG3200::readGyroRawCal(int *_GyroX, int *_GyroY, int *_GyroZ) {
   int a=0;
-  readGyroRaw(_GyroX, _GyroY, _GyroZ);
+  a=readGyroRaw(_GyroX, _GyroY, _GyroZ);
   MYASSERT(a,"Failed to get gyro data readgyrorawcal\n\r")
   *_GyroX += offsets[0];
   *_GyroY += offsets[1];
   *_GyroZ += offsets[2];
-    return 0;
+  return 0;
   }
 
 int ITG3200::readGyroRawCal(int *_GyroXYZ) {
   int a=0;
   a=readGyroRawCal(_GyroXYZ, _GyroXYZ+1, _GyroXYZ+2);
-    MYASSERT(a,"Failed to read from readgyrorawcal\n\r")
-    return 0;
+  MYASSERT(a,"Failed to read from readgyrorawcal\n\r")
+  return 0;
   }
 
-void ITG3200::readGyro(float *_GyroX, float *_GyroY, float *_GyroZ){
+int ITG3200::readGyro(float *_GyroX, float *_GyroY, float *_GyroZ){
+  int a=0;
   int x, y, z;
-  
-  readGyroRawCal(&x, &y, &z); // x,y,z will contain calibrated integer values from the sensor
+  a=readGyroRawCal(&x, &y, &z); // x,y,z will contain calibrated integer values from the sensor
+  MYASSERT(a,"Failed to read from readgyro\n\r")
   *_GyroX =  x / 14.375 * polarities[0] * gains[0];
   *_GyroY =  y / 14.375 * polarities[1] * gains[1];
   *_GyroZ =  z / 14.375 * polarities[2] * gains[2];
+  return 0;
 }
 
-void ITG3200::readGyro(float *_GyroXYZ){
-  readGyro(_GyroXYZ, _GyroXYZ+1, _GyroXYZ+2);
+int ITG3200::readGyro(float *_GyroXYZ){
+  int a=0;
+  a=readGyro(_GyroXYZ, _GyroXYZ+1, _GyroXYZ+2);
+  return a;
 }
 
 void ITG3200::reset() {     
@@ -423,6 +439,23 @@ void ITG3200::a=writeTo( _dev_address,uint8_t _addr, uint8_t _val) {
 //  }
 //  Wire.endTransmission(); // end transmission
 //}
+
+//void ITG3200::zeroGyro() {
+//  const int totSamples = 3;
+//  float raw[3];
+//  float tmpOffsets[] = {0,0,0};
+//  
+//  for (int i = 0; i < totSamples; i++){
+//    readGyro(raw);
+//    tmpOffsets[0] += raw[3];
+//    tmpOffsets[1] += raw[4];
+//    tmpOffsets[2] += raw[5];
+//  }
+//  
+//  gyro_off_x = tmpOffsets[0] / totSamples;
+//  gyro_off_y = tmpOffsets[1] / totSamples;
+//  gyro_off_z = tmpOffsets[2] / totSamples;
+//}
 void *gyro_initialisation(byte _dev_address){
   int a=0;
   ITG3200* gyro=new ITG3200();
@@ -431,18 +464,29 @@ void *gyro_initialisation(byte _dev_address){
     usart_printfm(USARTx,(const int *)"failed to initialze gyro\n\r");
     return null;
   }
-  a=gyro->zeroCalibrate(25,2);
+  a=gyro->zeroCalibrate(2500,2);
+  
   if(a<0){
     usart_printfm(USARTx,(const int *)"failed to zero calibrate gyro\n\r");
     return null;
   }
+  //gyro->zeroGyro();
+ 
   return (void *)gyro;
   
 }
 
-int gyro_xyz(void *gyro,int *xyz){
+int gyro_xyz(void *gyro,float *xyz){
   int a=0;
-  a=((ITG3200*)gyro)->readGyroRawCal(xyz);
-  MYASSERT(a,"Failed to read from gyro\n\r")
-  return 0;
+  a=((ITG3200*)gyro)->readGyro(xyz);
+  //usart_printfm(USARTx,(const int *)"Xoffset=%d\n\r Yoffset=%d\n\r,Zoffset=%d\n\r",((ITG3200*)gyro)->offsets[0],((ITG3200*)gyro)->offsets[1],((ITG3200*)gyro)->offsets[2]);
+  //MYASSERT(a,"Failed to read from gyro\n\r")
+  return a;
+}
+
+int gyro_xyz_raw(void *gyro,int *xyz){
+  int a=0;
+  ((ITG3200*)gyro)->readGyroRaw(xyz);
+   MYASSERT(a,"Failed to read from gyro\n\r")
+     return 0;
 }

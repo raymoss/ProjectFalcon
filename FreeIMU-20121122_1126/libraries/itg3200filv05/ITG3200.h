@@ -124,13 +124,16 @@ public:
   float gains[3]; 
   int offsets[3];
   float polarities[3];
-
+  float gyro_off_x;
+  float gyro_off_y;
+  float gyro_off_z;
+  //uint8_t _buff[6];
   ITG3200();
   
   // Gyro initialization
   int init(byte address);
   int init(byte address, byte _SRateDiv, byte _Range, byte _filterBW, byte _ClockSrc, bool _ITGReady, bool _INTRawDataReady);      
-    
+  void zeroGyro();  
   // Who Am I
   byte getDevAddr();
   void setDevAddr(unsigned int _addr);
@@ -172,8 +175,8 @@ public:
   int zeroCalibrate(unsigned int totSamples, unsigned int sampleDelayMS);	// assuming gyroscope is stationary (updates XYZ offsets for zero)
   int readGyroRawCal(int *_GyroX, int *_GyroY, int *_GyroZ);
   int readGyroRawCal(int *_GyroXYZ);
-  void readGyro(float *_GyroXYZ); // includes gain and offset
-  void readGyro(float *_GyroX, float *_GyroY, float *_GyroZ); // includes gain and offset    
+  int readGyro(float *_GyroXYZ); // includes gain and offset
+  int readGyro(float *_GyroX, float *_GyroY, float *_GyroZ); // includes gain and offset    
   // Power management
   void reset(); // after reset all registers have default values
   bool isLowPower();
@@ -199,7 +202,8 @@ private:
 extern "C"{
 #endif
 void *gyro_initialisation(byte _dev_address);
-int gyro_xyz(void * gyro,int *xyz);
+int gyro_xyz(void * gyro,float *xyz);
+int gyro_xyz_raw(void *gyro,int *xyz);
 #ifdef __cplusplus
 }
 #endif

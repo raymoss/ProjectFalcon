@@ -29,7 +29,11 @@
 //Need to pass these in constructor of RF24
 //uint8_t ce_pin=GPIO_Pin_2; /**< "Chip Enable" pin, activates the RX or TX role */
 //  uint8_t csn_pin=GPIO_Pin_4; /**< SPI Chip select */
-
+extern uint8_t fail_status;
+typedef struct comms_data{
+int code;
+int value;
+}comms_data;
 /**
  * Power Amplifier level.
  *
@@ -1927,9 +1931,13 @@ private:
  */
 extern "C"{
 #endif
+
 void *comms_initialize();
+uint8_t commsAvailable(void *radio);
 uint8_t packet_transfer(void *radio);
 uint8_t ping_pong(void *radio);
+uint8_t writeComms(void *radio,comms_data c);
+uint8_t readComms(void *radio,comms_data* c);
 #ifdef __cplusplus
 }
 #endif

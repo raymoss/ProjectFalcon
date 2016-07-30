@@ -91,9 +91,9 @@ class HMC58X3
     HMC58X3();
     int init(bool setmode,byte address);
     //void init(int address, bool setmode);
-    void getValues(int *x,int *y,int *z);
-    void getValues(float *x,float *y,float *z);
-    void getValues(float *xyz);
+    int getValues(int *x,int *y,int *z);
+    int getValues(float *x,float *y,float *z);
+    int getValues(float *xyz);
     int getValues(int *xyz);
     int getRaw(int *x,int *y,int *z);
     int getRaw(int *xyz);
@@ -113,7 +113,7 @@ class HMC58X3
 extern "C"{
 #endif
 void* magnetometer_initialisation(byte _dev_address);
-int magnet_xyz(void *magnet,int *xyz);
+int magnet_xyz(void *magnet,float *xyz);
 #ifdef __cplusplus
 }
 #endif

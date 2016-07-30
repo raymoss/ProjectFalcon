@@ -17,7 +17,7 @@ GPIOD->ODR ^= (1 << 13);           // Toggle the pin
 usart_initialization(USART1);
 usart_printf(USART1,"Hello\n\r");
 //ms_delay(5000);
-radio=comms_initialize(radio);
+radio=comms_initialize();
 //usart_printf(USART1,"Holy cow!!!Initialise was a success!!\n\r");
 while(radio==NULL){
   usart_printf(USART1,"Failed to initialize the comms sensor.Reinitialising...\n\r");

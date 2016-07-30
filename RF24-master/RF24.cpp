@@ -9,7 +9,7 @@
 #include "nRF24L01.h"
 //#include "RF24_config.h"
 #include "RF24.h"
-
+uint8_t fail_status=0;
 /****************************************************************************/
 
 void RF24::csn(bool mode)
@@ -742,7 +742,7 @@ bool RF24::write( const void* buf, uint8_t len, const bool multicast )
 				#endif
 			}
 		#endif
-	usart_printfm(USARTx,(const int *)"I am stuck here\n\r");
+	//usart_printfm(USARTx,(const int *)"I am stuck here\n\r");
         }
     
 	ce(LOW);
@@ -1515,10 +1515,67 @@ void *comms_initialize(){
 // usart_printfm(USARTx,(const int *)"pipe_reading_address=%02x\n\r",((RF24 *)radio)->pipe0_reading_address[0]);
 //   usart_printfm(USARTx,(const int *)"p_variant=%d\n\r",((RF24 *)radio)->p_variant);
 //   usart_printfm(USARTx,(const int *)"addr_width=%02x\n\r",((RF24 *)radio)->addr_width);
-//   usart_printfm(USARTx,(const int *)"payload_size=%02d\n\r",((RF24 *)radio)->payload_size);
+   usart_printfm(USARTx,(const int *)"payload_size=%02d\n\r",((RF24 *)radio)->payload_size);
+    usart_printfm(USARTx,(const int *)"comms_data=%02d\n\r",sizeof(comms_data));
+    usart_printfm(USARTx,(const int *)"int=%02d\n\r",sizeof(int));
+    usart_printfm(USARTx,(const int *)"uint=%02d\n\r",sizeof(uint8_t));
  return (void *)radio;
 }
-
+uint8_t writeComms(void *radio,comms_data c){
+  ((RF24 *)radio)->stopListening();
+//  signed char temp[4]; 
+//  signed char temp1;
+//  temp[0]=0x000000FF & c.value;
+//  temp[1]=(0x0000FF00 & c.value ) >> 8;
+//  temp[2]=(0x00FF0000 & c.value ) >> 16;
+//  temp[3]=(0xFF000000 & c.value ) >> 24;
+//  temp1= (0x0F & temp[0])<<4;
+//  temp[0]=((0xF0 & temp[0]) >> 4 ) | temp1 ;
+//  temp1= (0x0F & temp[1])<<4;
+//  temp[1]=((0xF0 & temp[1]) >> 4 ) | temp1 ;
+//  temp1= (0x0F & temp[2])<<4;
+//  temp[2]=((0xF0 & temp[2]) >> 4 ) | temp1 ;
+//  temp1= (0x0F & temp[3])<<4;
+//  temp[3]=((0xF0 & temp[3]) >> 4 ) | temp1 ;
+//  c.value = (int)(((int)temp[0] << 24) | ((int)temp[1] << 16) | ((int)temp[2] << 8) | (int)temp[0]) ; 
+ // usart_printfm(USARTx,(const int *)"c.code=%u,c.value=%d\n\r",c.code,c.value);
+  
+  if (!((RF24 *)radio)->write( &c,  sizeof(comms_data) )){
+    ((RF24 *)radio)->startListening();   
+    return 1;
+  }
+  else{ 
+    ((RF24 *)radio)->startListening();  
+    return 0;
+  }
+}
+uint8_t readComms(void *radio,comms_data* c){
+  ((RF24 *)radio)->read( c, sizeof(comms_data) );
+//  signed char temp[4]; 
+//  signed char temp1;
+//  temp[0]=0x000000FF & c->value;
+//  temp[1]=(0x0000FF00 & c->value ) >> 8;
+//  temp[2]=(0x00FF0000 & c->value ) >> 16;
+//  temp[3]=(0xFF000000 & c->value ) >> 24;
+//  temp1= (0x0F & temp[0])<<4;
+//  temp[0]=((0xF0 & temp[0]) >> 4 ) | temp1 ;
+//  temp1= (0x0F & temp[1])<<4;
+//  temp[1]=((0xF0 & temp[1]) >> 4 ) | temp1 ;
+//  temp1= (0x0F & temp[2])<<4;
+//  temp[2]=((0xF0 & temp[2]) >> 4 ) | temp1 ;
+//  temp1= (0x0F & temp[3])<<4;
+//  temp[3]=((0xF0 & temp[3]) >> 4 ) | temp1 ;
+//  c->value = (int)(((int)temp[0] << 24) | ((int)temp[1] << 16) | ((int)temp[2] << 8) | (int)temp[0]) ; 
+  //usart_printfm(USARTx,(const int *)"c.code=%u,c.value=%d\n\r",c.code,c.value);
+  //usart_printfm(USARTx,(const int *)"c.code=%u,c.value=%d\n\r",c->code,c->value);     
+  return 0;
+}
+uint8_t commsAvailable(void *radio){
+  if( ((RF24 *)radio)->available())
+    return 1;
+  else 
+    return 0;
+}
 uint8_t ping_pong(void *radio){
   uint8_t receive=9;
   uint8_t send=9;

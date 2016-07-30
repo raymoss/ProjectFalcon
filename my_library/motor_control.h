@@ -10,8 +10,11 @@
 #ifndef motor_control
 #define motor_control
 #define byte uint8_t
-#define TIMi TIM4
+#define TIMi TIM1
 #define MYASSERT(a,message) if(a<0){ usart_printf(USARTx,const char *message); return -1;}
+extern int kp,ki,kd,error_pitch,error_roll,error_pitch_d,error_roll_d,error_pitch_i,error_roll_i,throttle;
+extern int motor1_error,motor2_error,motor3_error,motor4_error;
+extern int motor_speed1,motor_speed2,motor_speed3,motor_speed4;
 #ifdef __cplusplus
 extern "C"{
 #endif

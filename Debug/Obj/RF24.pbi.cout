@@ -22,6 +22,26 @@ C:\Users\msheikh\Desktop\STM\Project_Falcon\FreeIMU-20121122_1126\libraries\itg3
 -I
 C:\Users\msheikh\Desktop\STM\Project_Falcon\RF24-master
 -I
+C:\Users\msheikh\Desktop\STM\Project_Falcon\KalmanFilter
+-I
+C:\Users\MOHSIN\Desktop\Project_Falcon\STM32F4xx_StdPeriph_Driver\inc
+-I
+C:\Users\MOHSIN\Desktop\Project_Falcon
+-I
+C:\Users\MOHSIN\Desktop\Project_Falcon\my_library
+-I
+C:\Users\MOHSIN\Desktop\Project_Falcon\FreeIMU-20121122_1126\libraries\adxl345driver
+-I
+C:\Users\MOHSIN\Desktop\Project_Falcon\FreeIMU-20121122_1126\libraries\HMC58X3
+-I
+C:\Users\MOHSIN\Desktop\Project_Falcon\FreeIMU-20121122_1126\libraries\itg3200filv05
+-I
+C:\Users\MOHSIN\Desktop\Project_Falcon\KalmanFilter
+-I
+C:\Users\MOHSIN\Desktop\Project_Falcon\RF24-master
+-I
+C:\Users\MOHSIN\Desktop\Project_Falcon\Include
+-I
 C:\Program Files (x86)\IAR Systems\Embedded Workbench 7.0\arm\inc
 -I
 C:\Program Files (x86)\IAR Systems\Embedded Workbench 7.0\arm\inc\c
@@ -47,6 +67,26 @@ C:\Users\msheikh\Desktop\STM\Project_Falcon\FreeIMU-20121122_1126\libraries\HMC5
 C:\Users\msheikh\Desktop\STM\Project_Falcon\FreeIMU-20121122_1126\libraries\itg3200filv05
 -I
 C:\Users\msheikh\Desktop\STM\Project_Falcon\RF24-master
+-I
+C:\Users\msheikh\Desktop\STM\Project_Falcon\KalmanFilter
+-I
+C:\Users\MOHSIN\Desktop\Project_Falcon\STM32F4xx_StdPeriph_Driver\inc
+-I
+C:\Users\MOHSIN\Desktop\Project_Falcon
+-I
+C:\Users\MOHSIN\Desktop\Project_Falcon\my_library
+-I
+C:\Users\MOHSIN\Desktop\Project_Falcon\FreeIMU-20121122_1126\libraries\adxl345driver
+-I
+C:\Users\MOHSIN\Desktop\Project_Falcon\FreeIMU-20121122_1126\libraries\HMC58X3
+-I
+C:\Users\MOHSIN\Desktop\Project_Falcon\FreeIMU-20121122_1126\libraries\itg3200filv05
+-I
+C:\Users\MOHSIN\Desktop\Project_Falcon\KalmanFilter
+-I
+C:\Users\MOHSIN\Desktop\Project_Falcon\RF24-master
+-I
+C:\Users\MOHSIN\Desktop\Project_Falcon\Include
 -DUSE_STDPERIPH_DRIVER=1
 -D__CHAR_BITS__=8
 -D__CHAR_MAX__=0xff
@@ -250,8 +290,8 @@ C:\Users\msheikh\Desktop\STM\Project_Falcon\RF24-master
 -D__HAS_LOCATED_DECLARATION__=1
 -D__HAS_LOCATED_WITH_INIT__=1
 -D__IAR_COMPILERBASE__=593926
--D__DATE__="Jun 13 2016"
--D__TIME__="00:08:46"
+-D__DATE__="Jul 30 2016"
+-D__TIME__="03:00:46"
 -D__STDC__=1
 -D__cplusplus=199711L
 -D__iar_extended_embedded_cplusplus=1

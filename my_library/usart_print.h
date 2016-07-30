@@ -18,7 +18,7 @@ void usart_printf(USART_TypeDef* USART,const char *format, ...);
 void usart_scanf(USART_TypeDef* USART,char *);
 void ms_delay(int ms);
 void micro_delay(int ms);
-int USART_available(USART_TypeDef* USART);
+int usart_available(USART_TypeDef* USART);
 #ifdef __cplusplus
 }
 #endif

@@ -28,22 +28,27 @@ ADXL345::ADXL345() {
   gains[2] = 0.00349265;
 }
 
-void ADXL345::init(uint8_t address) {
+int ADXL345::init(uint8_t address) {
   _dev_address = address;
   int i=0;
-  usart_printfm(USARTx,(const int *)"Device address :%2x\n\r",address);
-  powerOn();
+  //usart_printfm(USARTx,(const int *)"Device address :%2x\n\r",address);
+  i=powerOn();
+  return i;
   //usart_printfm(USARTx,(const int *)"Device address 2:%2x\n\r",address);
   //powerOn();
   //getRegisterBit(ADXL345_POWER_CTL,1);
 }
 
-void ADXL345::powerOn() {
+int ADXL345::powerOn() {
+  int a=0;
   //Turning on the ADXL345
   //writeTo(ADXL345_POWER_CTL, 0);      
   //writeTo(ADXL345_POWER_CTL, 16);
-  writeTo(_dev_address,ADXL345_POWER_CTL, 8);
-  writeTo(_dev_address,ADXL345_DATA_FORMAT,0xB);
+  a=writeTo(_dev_address,ADXL345_POWER_CTL, 8);
+  a+=writeTo(_dev_address,ADXL345_DATA_FORMAT,0x0B);
+  if(a<0)
+    return -1;
+  else return 0;
 }
 
 // Reads the acceleration into an array of three places
@@ -55,153 +60,39 @@ int ADXL345::readAccel(int *xyz){
 
 // Reads the acceleration into three variable x, y and z
 int ADXL345::readAccel(int *x, int *y, int *z) {
- int a=0;
+  int a=0;
+  uint8_t counter=3;
+  while(counter!=0){
   a=readFrom(_dev_address,ADXL345_DATAX0, 2, &_buff[0]); //read the acceleration data from the ADXL345
-  if(a<0) return -1;
-  //  ms_delay(1000);
-//  readFrom(_dev_address,ADXL345_DATAX1, 1, &_buff[1]);
-//  ms_delay(1000);
-  a=readFrom(_dev_address,ADXL345_DATAY0, 2, &_buff[2]);
-  if(a<0) return -1;
-//  usart_printfm(USARTx,(const int *)"Value y0= %d\n\r",_buff[2]);
-//  ms_delay(1000);
-  //readFrom(_dev_address,ADXL345_DATAY1, 1, &_buff[3]);
-//  usart_printfm(USARTx,(const int *)"Value y1= %d\n\r",_buff[3]);
-//  ms_delay(1000);
-  a=readFrom(_dev_address,ADXL345_DATAZ0, 2, &_buff[4]);
-  if(a<0) return -1;
-  //  usart_printfm(USARTx,(const int *)"Value z0= %d\n\r",_buff[4]);
-//  ms_delay(1000);
-//  readFrom(_dev_address,ADXL345_DATAZ1, 1, &_buff[5]);
-//  usart_printfm(USARTx,(const int *)"Value z1= %d\n\r",_buff[5]);
-//  ms_delay(1000);
+  a+=readFrom(_dev_address,ADXL345_DATAY0, 2, &_buff[2]);
+  a+=readFrom(_dev_address,ADXL345_DATAZ0, 2, &_buff[4]);
+  if(a<0) 
+    counter--;
+  else 
+    break;
+  }
+  if(counter==0){
+    usart_printfm(USARTx,(const int *)"Failed to read from the accel sensor...");
+    return -1;
+  }
  /*TODO:Multibyte read is not working for now .Need to debug from logic analyser*/ 
-// readFrom(_dev_address,ADXL345_DATAX0, 6, _buff);
-  // each axis reading comes in 10 bit resolution, ie 2 bytes.  Least Significat Byte first!!
-  // thus we are converting both bytes in to one int
-  *x = (((int)_buff[1]) << 8) | _buff[0];  
-  *y = (((int)_buff[3]) << 8) | _buff[2];
+  *x = (((int)(signed char)_buff[1]) << 8) | _buff[0];  
+  *y = (((int)(signed char)_buff[3]) << 8) | _buff[2];
  // usart_printfm(USARTx,(const int *)"Value y0= %d\n\r",*y);
-  *z = (((int)_buff[5]) << 8) | _buff[4];
+  *z = (((int)(signed char)_buff[5]) << 8) | _buff[4];
 return 0;
 }
 
-int ADXL345::get_Gxyz(int *xyz_int){
+int ADXL345::get_Gxyz(float *xyz){
   int i,a;
-  //int xyz_int[3];
+  int xyz_int[3];
   a=readAccel(xyz_int);
   if(a<0) return -1;
   for(i=0; i<3; i++){
-    //xyz[i] = xyz_int[i] * gains[i];
+    xyz[i] = xyz_int[i] * gains[i];
   }
 return 0;
 }
-
-// Writes val to address register on device
-//void ADXL345::writeTo(byte address, byte val) {
-//  int a=0;
-//  a=i2c_beginTransmission(I2C2,_dev_address,i2c_write); // start transmission to device
-//  //usart_printfm(USARTx,(const int *)"Writing to this device address: %2x\n\r",_dev_address);
-//  //assert(a);
-//  a=i2c_sendData(I2C2,address);             // send register address
-//  //assert(a);   
-//  a=i2c_sendData(I2C2,val);  // send value to write
-//  //assert(a);
-//  a=i2c_stopTransmission(I2C2);         // end transmission
-//}
-
-// Reads num bytes starting from address register on device in to _buff array
-//void ADXL345::readFrom(_dev_address,byte address, int num, byte _buff[]) {
-//  int a=0,i=0;
-//  a=i2c_beginTransmission(I2C2,_dev_address,i2c_write); // start transmission to device
-//  //assert(a);
-// // usart_printfm(USARTx,(const int *)"Reading from this device address: %2x\n\r",_dev_address);
-//  a=i2c_sendData(I2C2,address);             // sends address to read from
-//  //usart_printfm(USARTx,(const int *)"sent this data which is the address to read from: %2x\n\r",address);
-//  //  if(a<0)
-////     return (a-1);
-//  //i2c_stopTransmission(I2C2);         // end transmission
-////  if(a<0)
-////     return (a-2);
-//  i2c_beginTransmission(I2C2,_dev_address,i2c_read); // start transmission to device
-//  //usart_printfm(USARTx,(const int *)"Initiated the register read cycle: %2x\n\r",_dev_address);
-//  //  if(a<0)
-////     return a;
-//  // request 6 bytes from device
-//  if(num==1){
-//    I2C_AcknowledgeConfig(I2C2, DISABLE);
-//	int timeout;
-//        uint8_t flag1=0,flag2=0;
-//        /* Test on I2C1 EV8 and clear it */
-//        timeout = I2C_TIMEOUT_MAX; /* Initialize timeout value */
-//         
-//        
-//	// wait until one byte has been received
-//      
-//	while( !I2C_CheckEvent(I2C2, I2C_EVENT_MASTER_BYTE_RECEIVED) ){
-//          ms_delay(100);
-//          if((timeout--)==0){
-//            flag1 = I2C2->SR1;
-//            flag2 = I2C2->SR2;
-//            usart_printf(USARTx,"Flag1:%04x \n\r Flag2:%04x\n\r",flag1,flag2);
-//            usart_printf(USARTx,"Failing at read nnack stage\n\r");
-//            return ;
-//          }
-//        }
-//	// wait until one byte has been received
-//	 I2C_GenerateSTOP(I2C2, ENABLE);
-//	// read data from I2C data register and return data byte
-//	_buff[i] = I2C_ReceiveData(I2C2);
-//        return;
-//  }
-//  if(num==2)
-//  {
-//    while(I2C_GetFlagStatus(I2C2,I2C_FLAG_ADDR)!=SET);
-//    I2C_AcknowledgeConfig(I2C2, DISABLE);
-//    I2C_NACKPositionConfig(I2C2, I2C_NACKPosition_Next);
-//    while(I2C_GetFlagStatus(I2C2,I2C_FLAG_BTF)!=SET);
-//    i2c_stopTransmission(I2C2);
-//    _buff[i] = I2C_ReceiveData(I2C2);
-//    i++;
-//    _buff[i] = I2C_ReceiveData(I2C2);
-//    num-=2;
-//    // receive a byte
-//    //usart_printfm(USARTx,(const int *)"this byte read from accel: %2x\n\r",i);
-//   return ; 
-//  }
-//  while(num>0)         // device may send less than requested (abnormal)
-//  if(num==3){
-//  //_buff[i]=I2C_read_ack(I2C2);
-//  while(I2C_GetFlagStatus(I2C2,I2C_FLAG_BTF)!=SET);
-//  I2C_AcknowledgeConfig(I2C2, DISABLE);
-//  _buff[i]=I2C_ReceiveData(I2C2);
-//  i++;
-//  num--;
-//  while(I2C_GetFlagStatus(I2C2,I2C_FLAG_BTF)!=SET);
-//  i2c_stopTransmission(I2C2);
-//  _buff[i]=I2C_ReceiveData(I2C2);
-//  i++;
-//  _buff[i]=I2C_ReceiveData(I2C2);
-//  i++;
-//  num-=2;
-//  usart_printfm(USARTx,(const int *)"This byte read from nack: %2x\n\r",i);
-//  return; 
-//  }
-//  else{
-//    _buff[i]=I2C_read_ack(I2C2);
-//    i++;
-//    num--;
-//  }
-////  if(i != num){
-////    status = ADXL345_ERROR;
-////    error_code = ADXL345_READ_ERROR;
-////  }
-//  //ms_delay(10);
-//  //i2c_stopTransmission(I2C2);         // end transmission
-//}
-
-// Gets the range setting and return it into rangeSetting
-// it can be 2, 4, 8 or 16
 void ADXL345::getRangeSetting(byte* rangeSetting) {
   byte _b;
   readFrom(_dev_address,ADXL345_DATA_FORMAT, 1, &_b);
@@ -603,7 +494,7 @@ float ADXL345::getRate(){
   byte _b;
   readFrom(_dev_address,ADXL345_BW_RATE, 1, &_b);
   _b &= 0x0F;
-  return (pow(2,((int) _b)-6)) * 6.25;
+  return (power(2,((int) _b)-6)) * 6.25;
 }
 
 void ADXL345::setRate(float rate){
@@ -621,13 +512,15 @@ void ADXL345::setRate(float rate){
   }
 }
 
-void ADXL345::set_bw(byte bw_code){
+int ADXL345::set_bw(byte bw_code){
+  int a=0;
   if((bw_code < ADXL345_BW_3) || (bw_code > ADXL345_BW_1600)){
     status = false;
     error_code = ADXL345_BAD_ARG;
   }
   else{
-    writeTo(_dev_address,ADXL345_BW_RATE, bw_code);
+    a=writeTo(_dev_address,ADXL345_BW_RATE, bw_code);
+    return a;
   }
 }
 
@@ -714,20 +607,27 @@ void print_byte(byte val){
 }
 
 void* accelerometer_initialization(byte device_address){
+  int a=0;
   ADXL345* accel = new ADXL345();
-  accel->init(ADXL345_ADDR_ALT_LOW);
-  accel->set_bw(ADXL345_BW_12);
+  a=accel->init(ADXL345_ADDR_ALT_LOW);
+  ms_delay(1000);
+  a+=accel->set_bw(ADXL345_BW_12);
+  
+  if(a<0){
+    return null;
+  }
   return (void*)(accel);
 }
 
-int accel_xyz(void *accel,int accel_data[]){
+int accel_xyz(void *accel,float accel_data[]){
   int a=0;
   a=((ADXL345*)accel)->get_Gxyz(accel_data);
-  if(a<0) return -1;
+  if(a<0) 
+    return -1;
   return 0;
 }
 
-int pow(int x, int y){
+int power(int x, int y){
     int result=1;
     for(;y>0;y--){
     result*=x;

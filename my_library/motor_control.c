@@ -1,4 +1,8 @@
 #include "motor_control.h"
+float time=1;
+int kp=0,ki=0,kd=0,error_pitch,error_roll,error_pitch_d=0,error_roll_d=0,error_pitch_i=0,error_roll_i=0,throttle=750;
+int motor1_error=0,motor2_error=0,motor3_error=0,motor4_error=0;
+int motor_speed1,motor_speed2,motor_speed3,motor_speed4;
 void NVCC_Config(){
 NVIC_InitTypeDef NVIC_InitStructure;
 
@@ -6,13 +10,13 @@ NVIC_InitTypeDef NVIC_InitStructure;
   //RCC_APB1PeriphClockCmd(RCC_APB1Periph_TIM4, ENABLE);
 
   /* Enable the TIM4 gloabal Interrupt */
-  NVIC_InitStructure.NVIC_IRQChannel = TIM4_IRQn;
+  NVIC_InitStructure.NVIC_IRQChannel = TIM1_CC_IRQn;
   NVIC_InitStructure.NVIC_IRQChannelPreemptionPriority = 0;
   NVIC_InitStructure.NVIC_IRQChannelSubPriority = 1;
   NVIC_InitStructure.NVIC_IRQChannelCmd = ENABLE;
   NVIC_Init(&NVIC_InitStructure);
 }
-void TIM4_Config_PWMOutput(){
+void TIM_Config_PWMOutput(){
     TIM_OCInitTypeDef outputChannelInit ;
     outputChannelInit.TIM_OCMode = TIM_OCMode_PWM1;
     outputChannelInit.TIM_Pulse = 750;
@@ -32,21 +36,21 @@ void TIM4_Config_PWMOutput(){
     
     Remember: if pulse_length is larger than TIM_Period, you will have output HIGH all the time
 */
-    TIM_OC1Init(TIM4, &outputChannelInit);
-    TIM_OC1PreloadConfig(TIM4, TIM_OCPreload_Enable);
-    TIM_OC2Init(TIM4, &outputChannelInit);
-    TIM_OC2PreloadConfig(TIM4, TIM_OCPreload_Enable);
-    TIM_OC3Init(TIM4, &outputChannelInit);
-    TIM_OC3PreloadConfig(TIM4, TIM_OCPreload_Enable);
-    TIM_OC4Init(TIM4, &outputChannelInit);
-    TIM_OC4PreloadConfig(TIM4, TIM_OCPreload_Enable);
-    TIM_ARRPreloadConfig(TIM4, ENABLE);
+    TIM_OC1Init(TIMi, &outputChannelInit);
+    TIM_OC1PreloadConfig(TIMi, TIM_OCPreload_Enable);
+    TIM_OC2Init(TIMi, &outputChannelInit);
+    TIM_OC2PreloadConfig(TIMi, TIM_OCPreload_Enable);
+    TIM_OC3Init(TIMi, &outputChannelInit);
+    TIM_OC3PreloadConfig(TIMi, TIM_OCPreload_Enable);
+    TIM_OC4Init(TIMi, &outputChannelInit);
+    TIM_OC4PreloadConfig(TIMi, TIM_OCPreload_Enable);
+    TIM_ARRPreloadConfig(TIMi, ENABLE);
     
 }
-void TIM4_Config_timebase(){
+void TIM_Config_timebase(){
   
   TIM_TimeBaseInitTypeDef  TIM_TimeBaseStructure;
-  RCC_APB1PeriphClockCmd(RCC_APB1Periph_TIM4, ENABLE);
+  RCC_APB2PeriphClockCmd(RCC_APB2Periph_TIM1, ENABLE);                          //Change it for appropiate timer
   uint16_t Prescalar= (uint16_t) 84;    // 255;
   /*    
     TIM4 is connected to APB1 bus, which has on F407 device 42MHz clock                 
@@ -88,32 +92,34 @@ void TIM4_Config_timebase(){
   TIM_TimeBaseStructure.TIM_Period = 19999; //6561;
   TIM_TimeBaseStructure.TIM_ClockDivision = 0;
   TIM_TimeBaseStructure.TIM_CounterMode = TIM_CounterMode_Up;
-  TIM_TimeBaseInit( TIM4, &TIM_TimeBaseStructure );
+  TIM_TimeBaseInit( TIMi, &TIM_TimeBaseStructure );
   // TIM_ITConfig( TIM4, TIM_IT_Update, ENABLE );
 }
 void GPIO_Config(){
 GPIO_InitTypeDef  GPIO_InitStructure;
-  RCC_AHB1PeriphClockCmd(RCC_AHB1Periph_GPIOD , ENABLE);
+  RCC_AHB1PeriphClockCmd(RCC_AHB1Periph_GPIOE , ENABLE);
   
-  /* GPIOC Configuration: TIM4 CH1 (PC6) and TIM4 CH2 (PC7) */
-  GPIO_InitStructure.GPIO_Pin = GPIO_Pin_12  ;
+  /* GPIOC Configuration: TIM1 CH1 CH2 CH3 CH4 : PE9 PE11  PE13  PE14 */
+  GPIO_InitStructure.GPIO_Pin = GPIO_Pin_9 | GPIO_Pin_11 | GPIO_Pin_13 | GPIO_Pin_14 ;
   GPIO_InitStructure.GPIO_Mode = GPIO_Mode_AF;
   GPIO_InitStructure.GPIO_Speed = GPIO_Speed_100MHz;
   GPIO_InitStructure.GPIO_OType = GPIO_OType_PP;
   GPIO_InitStructure.GPIO_PuPd = GPIO_PuPd_UP ;
-  GPIO_Init(GPIOD, &GPIO_InitStructure); 
-  GPIO_PinAFConfig(GPIOD, GPIO_PinSource12, GPIO_AF_TIM4);  //add some more pins for TIM4
-   //GPIO_PinAFConfig(GPIOD, GPIO_Pin_7, GPIO_AF_TIM4);  //add some more pins for TIM4
+  GPIO_Init(GPIOE, &GPIO_InitStructure); 
+  GPIO_PinAFConfig(GPIOE, GPIO_PinSource9, GPIO_AF_TIM1);  
+  GPIO_PinAFConfig(GPIOE, GPIO_PinSource11, GPIO_AF_TIM1);
+  GPIO_PinAFConfig(GPIOE, GPIO_PinSource13, GPIO_AF_TIM1);
+  GPIO_PinAFConfig(GPIOE, GPIO_PinSource14, GPIO_AF_TIM1);
 }
-void TIM4_IRQHandler(){
-  TIM_ClearFlag(TIM4, TIM_IT_Update);
+void TIM_IRQHandler(){
+  TIM_ClearFlag(TIM1, TIM_IT_Update);
   GPIOC->ODR ^= GPIO_Pin_6;
 }
 uint16_t timetotick(uint16_t time){
   return time;
 }
-void TIM4_Config_PWM(){
-  RCC_APB1PeriphClockCmd(RCC_APB1Periph_TIM4, ENABLE);
+void TIM_Config_PWM(){
+  RCC_APB2PeriphClockCmd(RCC_APB2Periph_TIM1, ENABLE);
 /* Setup TIM / PWM values
      Servo Requirements:  (May be different for your servo)
         - 50Hz (== 20ms) PWM signal
@@ -151,34 +157,40 @@ void TIM4_Config_PWM(){
      */
     TIM_TimeBaseInitTypeDef     TIM_TimeBaseStructure;
     TIM_OCInitTypeDef           TIM_OCInitStructure;
-    uint16_t PrescalerValue = (uint16_t) 84;
+    uint16_t PrescalerValue = (uint16_t) 9;
 
     // Time Base Configuration
-    TIM_TimeBaseStructure.TIM_Period        = 19999;
+    TIM_TimeBaseStructure.TIM_Period        = 32280;
     TIM_TimeBaseStructure.TIM_Prescaler     = PrescalerValue;
     TIM_TimeBaseStructure.TIM_ClockDivision = 0;
     TIM_TimeBaseStructure.TIM_CounterMode   = TIM_CounterMode_Up;
     
-    TIM_TimeBaseInit(TIM4, &TIM_TimeBaseStructure);
+    TIM_TimeBaseInit(TIMi, &TIM_TimeBaseStructure);
     
     // Common TIM Settings
     TIM_OCInitStructure.TIM_OCMode      = TIM_OCMode_PWM1;
     TIM_OCInitStructure.TIM_OutputState = TIM_OutputState_Enable;
     TIM_OCInitStructure.TIM_Pulse       = 0;                        // Initial duty cycle
     TIM_OCInitStructure.TIM_OCPolarity  = TIM_OCPolarity_High;
+    TIM_OCInitStructure.TIM_OutputNState=TIM_OutputNState_Disable;
+    TIM_OCInitStructure.TIM_OCNPolarity  = TIM_OCNPolarity_High;
+    TIM_OCInitStructure.TIM_OCIdleState=TIM_OCIdleState_Reset;
+    TIM_OCInitStructure.TIM_OCNIdleState=TIM_OCNIdleState_Reset;
+    TIM_OC1Init(TIMi, &TIM_OCInitStructure);
+    TIM_OC1PreloadConfig(TIMi, TIM_OCPreload_Enable);
+    TIM_OC2Init(TIMi, &TIM_OCInitStructure);
+    TIM_OC2PreloadConfig(TIMi, TIM_OCPreload_Enable);
+    TIM_OC3Init(TIMi, &TIM_OCInitStructure);
+    TIM_OC3PreloadConfig(TIMi, TIM_OCPreload_Enable);
+    TIM_OC4Init(TIMi, &TIM_OCInitStructure);
+    TIM_OC4PreloadConfig(TIMi, TIM_OCPreload_Enable);
+   
     
-    // Channel 1
-    TIM_OC1Init(TIM4, &TIM_OCInitStructure);
-    TIM_OC1PreloadConfig(TIM4, TIM_OCPreload_Enable);
-  
-    // Channel 2
-//    TIM_OC2Init(TIM4, &TIM_OCInitStructure);
-//    TIM_OC2PreloadConfig(TIM4, TIM_OCPreload_Enable);
-    
-    TIM_ARRPreloadConfig(TIM4, ENABLE);
-    }
+    TIM_ARRPreloadConfig(TIMi, ENABLE);
+    TIM_CtrlPWMOutputs(TIMi,ENABLE);
+}
 void esc_write(uint16_t time,uint8_t channel_no){
-  TIM_OCInitTypeDef outputChannelInit ;
+  
   if(time<=700){
   usart_printf(USARTx,"%d channel Reached lower bound speed\n\r",channel_no);
   time=700;
@@ -189,22 +201,53 @@ void esc_write(uint16_t time,uint8_t channel_no){
   }
   //tick=timetotick(time);
   if(channel_no==1){
-    TIM4->CCR1=time;
+    TIMi->CCR1=time*1.619+0.642;
   }else if(channel_no==2){
-    TIMi->CCR2=time;
+    TIMi->CCR2=time*1.619+0.642;
   }else if(channel_no==3){
-    TIMi->CCR3=time;
-  }else{
-    TIMi->CCR4=time;
+    TIMi->CCR3=time*1.619+0.642;
+  }else if(channel_no==4){
+    TIMi->CCR4=time*1.619+0.642;
   }
-  usart_printf(USARTx,"Current speeed %d\n\r",time);
+  //usart_printf(USARTx,"Current speeed %d\n\r",time);
 }
-
+void esc_stop(){
+  esc_write(700,1);
+  esc_write(700,2);
+  esc_write(700,3);
+  esc_write(700,4);
+}
 void esc_initialize(TIM_TypeDef* TIMx){
  // RCC_APB1PeriphClockCmd(RCC_APB1Periph_TIM4,ENABLE); //change this if different timer then TIM4
   GPIO_Config();
-  TIM4_Config_PWM();
+  TIM_Config_PWM();
   
   //TIM4_Config_PWMOutput();    //default configuration . Speed at 750 ms
   TIM_Cmd(TIMx, ENABLE);
+  esc_write(700,1);
+  esc_write(700,2);
+  esc_write(700,3);
+  esc_write(700,4);
+}
+
+void pid_control(float *final_roll,float *final_pitch){
+  //motor_speed=kp*error+ki*error*dt+kd*error/dt
+  
+  
+  error_roll=(int)(*final_roll)/2;            //need to modify this statement after taking user input
+  error_pitch=(int)(*final_pitch)/2;
+  error_roll_i+=error_roll;
+  error_pitch_i+=error_pitch;
+  motor_speed2=throttle - (kp*error_roll+ki*(error_roll_i)*time+kd*(error_roll-error_roll_d)*time) + motor2_error;
+  motor_speed4=throttle + (kp*error_roll+ki*(error_roll_i)*time+kd*(error_roll-error_roll_d)*time) + motor4_error;
+  motor_speed1=throttle - (kp*error_pitch+ki*(error_pitch_i)*time+kd*(error_pitch-error_pitch_d)*time) + motor1_error;
+  motor_speed3=throttle + (kp*error_pitch+ki*(error_pitch_i)*time+kd*(error_pitch-error_pitch_d)*time) + motor3_error;
+  if( (700<motor_speed1<2400) && (700<motor_speed2<2400) && (700<motor_speed3<2400) && (700<motor_speed4<2400)){
+  esc_write(motor_speed1,1);
+  esc_write(motor_speed2,2);
+  esc_write(motor_speed3,3);
+  esc_write(motor_speed4,4);
+  }
+  error_roll_d=error_roll;
+  error_pitch_d=error_pitch;
 }

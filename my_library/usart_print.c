@@ -1,5 +1,5 @@
 #include "usart_print.h"
-//private funtions list
+
 void ms_delay(int ms);
 void usart_printf(USART_TypeDef* USARTx,const char *format, ...);
 void USART_puts(USART_TypeDef* USARTx,const char *s);
@@ -60,7 +60,7 @@ void usart_scanf(USART_TypeDef* USARTx, char *c){
 USART_getc(USARTx,c);
 }
 
-int USART_available(USART_TypeDef* USARTx){
+int usart_available(USART_TypeDef* USARTx){
   if(USART_GetFlagStatus(USARTx,USART_FLAG_RXNE)==SET)
     return 1;
   else 

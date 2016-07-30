@@ -99,7 +99,7 @@
 #define min(A,B) (A < B ) ? A : B
 #define max(A,B)  (A > B )? A : B
 #ifdef __cplusplus
-
+#define null (void *)0
 class ADXL345
 {
 public:
@@ -109,12 +109,13 @@ public:
   float gains[3];        // counts to Gs
 
   ADXL345();
-  void init(byte address);
-  void powerOn();
+  int init(byte address);
+  int powerOn();
   int readAccel(int* xyx);
   int readAccel(int* x, int* y, int* z);
-  int get_Gxyz(int *xyz);
-
+  int get_Gxyz(float *xyz);
+  int set_bw(byte bw_code);
+  
   void setTapThreshold(int tapThreshold);
   int getTapThreshold();
   void setAxisGains(float *_gains);
@@ -177,7 +178,7 @@ public:
   void setLowPower(bool state);
   float getRate();
   void setRate(float rate);
-  void set_bw(byte bw_code);
+  
   byte get_bw_code();  
 
   byte getInterruptSource();
@@ -215,10 +216,10 @@ private:
 #ifdef __cplusplus
 extern "C"{
 #endif
-int pow(int x , int y);
+int power(int x , int y);
 void print_byte(byte val);
 void *accelerometer_initialization(byte device_address);
-int accel_xyz(void *accel,int accel_data[]);
+int accel_xyz(void *accel,float accel_data[]);
 #ifdef __cplusplus
 }
 #endif
