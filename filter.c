@@ -1,5 +1,4 @@
 #include "filter.h"
-<<<<<<< HEAD
 void *magnet_object;
 void *accel_object;
 void *gyro_object;
@@ -7,16 +6,11 @@ void *kalman_roll;
 void *kalman_pitch;
 float gyro_roll=0.0,gyro_pitch=0.0;
 
-=======
->>>>>>> 5f8c2723cf665d7de0e477ed6e57f36b3f055238
 volatile unsigned int *DWT_CYCCNT  = (volatile unsigned int *)0xE0001004; //address of the register
 volatile unsigned int *DWT_CONTROL = (volatile unsigned int *)0xE0001000; //address of the register
 volatile unsigned int *SCB_DEMCR   = (volatile unsigned int *)0xE000EDFC; //address of the register
 unsigned long int start=0;
-<<<<<<< HEAD
 
-=======
->>>>>>> 5f8c2723cf665d7de0e477ed6e57f36b3f055238
 void ResetTiming(void)
 {
       *SCB_DEMCR = *SCB_DEMCR | 0x01000000;
@@ -25,7 +19,6 @@ void ResetTiming(void)
  }
  
 
-<<<<<<< HEAD
 void IMU_Initialisation(){
   uint8_t counter=3;
   i2c_initialize(I2C2);
@@ -78,8 +71,6 @@ void IMU_Initialisation(){
   usart_printf(USARTx," initialize gyro\n\r");
 }
 
-=======
->>>>>>> 5f8c2723cf665d7de0e477ed6e57f36b3f055238
 int accel_rollpitch(void *accel_object,float *accel_roll,float *accel_pitch){
   int a; float accel_data[3];
   float value_x,value_y,value_z;
@@ -88,31 +79,17 @@ int accel_rollpitch(void *accel_object,float *accel_roll,float *accel_pitch){
     usart_printf(USARTx,"Issue with reading the accel sensor value\n\r");
     return -1;
   }
-<<<<<<< HEAD
 
   //usart_printf(USARTx,"Values of accel :\n\rRawAccel_x=%f RawAccel_y=%f RawAccel_z=%f\n\r",accel_data[0],accel_data[1],accel_data[2]);
   //usart_printf(USARTx,"Values of accel :\n\rAccel_x=%f\n\rAccel_y=%f\n\rAccel_z=%f\n\r",value_x,value_y,value_z);
   *accel_pitch=atan2f(accel_data[1],accel_data[2])*180/PI;
   *accel_roll=atan2f(accel_data[0],accel_data[2])*180/PI;
-=======
-  value_x=(accel_data[0]-8191)*4.0/16384;
-  value_y=(accel_data[1]-8191)*4.0/16384;
-  value_z=(accel_data[2]-8191)*4.0/16384;
-  //usart_printf(USARTx,"Values of accel :\n\rRawAccel_x=%f\n\rRawAccel_y=%f\n\rRawAccel_z=%f\n\r",accel_data[0],accel_data[1],accel_data[2]);
-  //usart_printf(USARTx,"Values of accel :\n\rAccel_x=%f\n\rAccel_y=%f\n\rAccel_z=%f\n\r",value_x,value_y,value_z);
-  *accel_pitch=atan2f(value_y,value_z)*180/PI;
-  *accel_roll=atan2f(value_x,value_z)*180/PI;
->>>>>>> 5f8c2723cf665d7de0e477ed6e57f36b3f055238
   return 0;
 }
 
 int gyro_rollpitch(void *gyro_object,float *gyro_roll_rate,float *gyro_pitch_rate){
-<<<<<<< HEAD
   int a; 
   float gyro_data[3];
-=======
-  int a; float gyro_data[3];
->>>>>>> 5f8c2723cf665d7de0e477ed6e57f36b3f055238
   int gyro_data_raw[3];
   //unsigned int time=((*DWT_CYCCNT)-start)/10000000;
   //usart_printf(USARTx,"Time =%lu\n\r",time);
@@ -124,13 +101,8 @@ int gyro_rollpitch(void *gyro_object,float *gyro_roll_rate,float *gyro_pitch_rat
     usart_printf(USARTx,"Issue with reading the gyro sensor value\n\r");
     return -1;
   }
-<<<<<<< HEAD
   *gyro_roll_rate=gyro_data[0];
   *gyro_pitch_rate=gyro_data[1];
-=======
-  *gyro_roll_rate=gyro_data[0]*180/PI;
-  *gyro_pitch_rate=gyro_data[1]*180/PI;
->>>>>>> 5f8c2723cf665d7de0e477ed6e57f36b3f055238
   //  *gyro_pitch+=gyro_data[1]*time;
   //  *gyro_roll+=gyro_data[0]*time;
   //  ResetTiming();
@@ -165,7 +137,6 @@ int magnet_yaw(void *magnet_object,float *mag_yaw){
   usart_printf(USARTx,"magnet_data_x=%f magnet_data_y=%f data_z=%f degress=%f\n\r",magnet_data[0],magnet_data[1],magnet_data[2],headingDegrees);
   return 0;
 }
-<<<<<<< HEAD
 void kalman_initialization(){
     kalman_roll=kalman_initialize();
     kalman_pitch=kalman_initialize();
@@ -175,40 +146,25 @@ int kalman_roll_pitch(float *final_roll,float *final_pitch){
   int a=0;
   float accel_roll,accel_pitch,gyro_roll_rate,gyro_pitch_rate;
  
-=======
-
-int kalman_roll_pitch(void* accel_object,void* gyro_object,float *final_roll,float *final_pitch){
-  int a=0;
-  float accel_roll,accel_pitch,gyro_roll_rate,gyro_pitch_rate;
-  void *kalman;
->>>>>>> 5f8c2723cf665d7de0e477ed6e57f36b3f055238
   a=accel_rollpitch(accel_object,&accel_roll,&accel_pitch);
   if(a<0){
     usart_printf(USARTx,"Issue with reading the accel sensor value in kalman\n\r");
     return -1;
    }
-<<<<<<< HEAD
   if(accel_roll > 180 || accel_roll < -180 || accel_pitch > 180 || accel_pitch < -180 ){
     usart_printf(USARTx,"Accel's roll and pitch is not proper.\n\r");
     return -1;
   }
   //usart_printf(USARTx,"a.roll=%f a.pitch=%f",accel_roll,accel_pitch);
-=======
->>>>>>> 5f8c2723cf665d7de0e477ed6e57f36b3f055238
    unsigned int time=((*DWT_CYCCNT)-start)/10000000;
    //usart_printf(USARTx,"DWT_CYCCNT=%lu\n\r",*DWT_CYCCNT);
    ResetTiming();
    start=*DWT_CYCCNT;
-<<<<<<< HEAD
    a=gyro_rollpitch(gyro_object,&gyro_pitch_rate,&gyro_roll_rate);
-=======
-   a=gyro_rollpitch(gyro_object,&gyro_roll_rate,&gyro_pitch_rate);
->>>>>>> 5f8c2723cf665d7de0e477ed6e57f36b3f055238
    if(a<0){
     usart_printf(USARTx,"Issue with reading the gyro sensor value in kalman\n\r");
     return -1;
   }
-<<<<<<< HEAD
   if(gyro_roll_rate > 2000 || gyro_roll_rate < -2000 || gyro_pitch_rate > 2000 || gyro_pitch_rate < -2000 ){
     usart_printf(USARTx,"Gyro's roll and pitch is not proper.\n\r");
     return -1;
@@ -221,11 +177,5 @@ int kalman_roll_pitch(void* accel_object,void* gyro_object,float *final_roll,flo
    
   *final_roll=kalman_getAngle(kalman_roll,accel_roll, gyro_roll_rate,time);
   *final_pitch=kalman_getAngle(kalman_pitch,accel_pitch,gyro_pitch_rate,time);
-=======
-   time=1;
-   kalman=kalman_initialize();
-  *final_roll=kalman_getAngle(kalman,accel_roll, gyro_roll_rate,time);
-  *final_pitch=kalman_getAngle(kalman,accel_pitch,gyro_pitch_rate,time);
->>>>>>> 5f8c2723cf665d7de0e477ed6e57f36b3f055238
   return 0;
 }

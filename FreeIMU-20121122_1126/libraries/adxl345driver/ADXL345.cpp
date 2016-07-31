@@ -32,12 +32,8 @@ int ADXL345::init(uint8_t address) {
   _dev_address = address;
   int i=0;
   //usart_printfm(USARTx,(const int *)"Device address :%2x\n\r",address);
-<<<<<<< HEAD
   i=powerOn();
   return i;
-=======
-  powerOn();
->>>>>>> 5f8c2723cf665d7de0e477ed6e57f36b3f055238
   //usart_printfm(USARTx,(const int *)"Device address 2:%2x\n\r",address);
   //powerOn();
   //getRegisterBit(ADXL345_POWER_CTL,1);
@@ -48,16 +44,11 @@ int ADXL345::powerOn() {
   //Turning on the ADXL345
   //writeTo(ADXL345_POWER_CTL, 0);      
   //writeTo(ADXL345_POWER_CTL, 16);
-<<<<<<< HEAD
   a=writeTo(_dev_address,ADXL345_POWER_CTL, 8);
   a+=writeTo(_dev_address,ADXL345_DATA_FORMAT,0x0B);
   if(a<0)
     return -1;
   else return 0;
-=======
-  writeTo(_dev_address,ADXL345_POWER_CTL, 8);
-  writeTo(_dev_address,ADXL345_DATA_FORMAT,0x0B);
->>>>>>> 5f8c2723cf665d7de0e477ed6e57f36b3f055238
 }
 
 // Reads the acceleration into an array of three places
@@ -69,14 +60,9 @@ int ADXL345::readAccel(int *xyz){
 
 // Reads the acceleration into three variable x, y and z
 int ADXL345::readAccel(int *x, int *y, int *z) {
-<<<<<<< HEAD
   int a=0;
   uint8_t counter=3;
   while(counter!=0){
-=======
- int a=0;
- 
->>>>>>> 5f8c2723cf665d7de0e477ed6e57f36b3f055238
   a=readFrom(_dev_address,ADXL345_DATAX0, 2, &_buff[0]); //read the acceleration data from the ADXL345
   a+=readFrom(_dev_address,ADXL345_DATAY0, 2, &_buff[2]);
   a+=readFrom(_dev_address,ADXL345_DATAZ0, 2, &_buff[4]);
@@ -90,13 +76,6 @@ int ADXL345::readAccel(int *x, int *y, int *z) {
     return -1;
   }
  /*TODO:Multibyte read is not working for now .Need to debug from logic analyser*/ 
-<<<<<<< HEAD
-=======
-// readFrom(_dev_address,ADXL345_DATAX0, 6, _buff);
-  // each axis reading comes in 10 bit resolution, ie 2 bytes.  Least Significat Byte first!!
-  // thus we are converting both bytes in to one int
- 
->>>>>>> 5f8c2723cf665d7de0e477ed6e57f36b3f055238
   *x = (((int)(signed char)_buff[1]) << 8) | _buff[0];  
   *y = (((int)(signed char)_buff[3]) << 8) | _buff[2];
  // usart_printfm(USARTx,(const int *)"Value y0= %d\n\r",*y);
