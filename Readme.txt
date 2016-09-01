@@ -4,13 +4,12 @@ Current status of the project:
 2.PWM waves for motor control is also working fine. Verified with the logic analyser.
 3.Input from the usart is working . Using this we can send run time commands to the controller.
 4.Basic functionality of communication channel using nrf24l01 is working . We are using the stm32 as the server and arduino board as the client.
-
-Next target:
-1. Get the angle of pitch and roll from the accelerometer and gyro.
-2. Passing the angles from a filter (kalman or complementary ?) .
-3. Design a PID controller for the motor control.
-4. Prepare the basic protocol to debug the readings and control from communication channel. 
-
+5. Get the angle of pitch and roll from the accelerometer and gyro.
+6. Passing the angles from a filter (kalman or complementary ?) .
+7. Design a PID controller for the motor control.
+8. Prepare the basic protocol to debug the readings and control from communication channel. 
+9. Optimize PID parameters for smooth movement of the motors. PENDING
+10. Lot of variation in roll angle is observed when motor is started. PENDING 
 
 BUGS(Resolved):
 17/4/2016 : 2.55AM
@@ -28,4 +27,4 @@ Lets hope for the best.
 BUGS:
 1. Unable to read 6 bytes of i2c data from the sensors. Currently reading 2 bytes at a time.
 2. After completion of write cycle, we are not sending the stop cycle. Currently it is not causing any issues but in future it can haunt us.
-
+3. No variation in roll angle should be observed when motors are rotating in stationary mode.
