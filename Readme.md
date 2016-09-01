@@ -2,7 +2,7 @@
 
 **Quadcopter based on STM32F4discovery board**
 
-##INTRODUCTION:
+##SUMMARY:
 This projects objective is to build a quadcopter using STM32F4discovery board , nrf24L01 module( as a communication channel ), GY-85 9 axis IMU module (consists of ADXL345 accelerometer , ITG3205 gyrometer and HMC 5883 magnetometer) , ESC's and Motors from scratch( Yeah! ). For the components such as frame,ESC's and motors , we are using [ARF 525](http://www.quadkopters.com/product/arf-kit-rtf-kit-and-frames/arf-525-kit-with-kk-2-1-controller/). In place of KK2.1 board, we are using custom controller based on STM32F4Discovery. For sensor drivers , we are using the code of arduino as reference and then modifying them for arm based stm32 controller. We used this porting of drivers for IMU sensors and nrf24l01 module. We are combining the sensor value using kalman filter so that there inherent shortcommings (gyro's drift and accelerometer variation due to motion) can be overcomed . Fortunately we have an excellent library ([link](https://github.com/TKJElectronics/KalmanFilter)) for implementing the filter. The motor control is performed using PID algorithm using the roll and pitch angle provided by the filter. On hardware side, we are using timers to generate PWM signals for the ESC. Upper and lower limit is set at 700 and 2400 ms with 50Hz signal. We are using arduino board with another nrf24l01 module to control the quadcopter. We can change the PID parameters, motor drift value , control motor speed and observe roll and pitch angle using this communication channel.  
 
 ##Current status of the project:
